@@ -1,0 +1,674 @@
+---
+title: "Intro to R for Scientific Researchers"
+author: "Fred LaPolla"
+date: "April 2, 2020"
+output:
+  slidy_presentation: default
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+# R for Analysis
+
+*** 
+
+# R Learning Outcomes
+</br>
+</br>
+</br>
+
+Students will be able to:
+
+>- Explain what R is and what it is for
+>- Load a dataset into R
+>- Install packages and load them
+>- Explore their data using at least one summary function
+
+*** 
+
+## What is R?
+
+</br>
+</br>
+</br>
+
+
+R is a language for data analysis that can be used for cleaning, analyzing and publishing data. 
+
+*** 
+
+## What is R?
+</br>
+</br>
+</br>
+R is a coding language developed specifically for data analysis.
+
+R is *open source* and *free*
+
+*** 
+
+## What is RStudio?
+</br>
+</br>
+</br>
+
+RStudio is a free Integrated Development Environment.
+
+This means it is a program for working with R that will make it easier to code. 
+
+*** 
+
+## R for Analysis
+
+
+</br>
+</br>
+</br>
+
+Analyzing your data in R lets you:
+
+>- Leave your raw data unchanged
+
+>- Document analysis steps with your code
+
+>- Automate analysis and save it for later
+
+>- Share with other R users 
+
+>- Explicitly say what files you are using for analysis and displaying your order of operations
+
+>- Maintain a history and version file
+
+>- Publish your code
+
+*** 
+
+## R Scripts
+
+</br>
+</br>
+</br>
+A script is essentially a set of instructions (code) that tells the computer what to do. 
+
+```{r echo=TRUE}
+1:10
+mean(1:10)
+```
+
+*** 
+
+## R Scripts
+
+
+</br>
+</br>
+</br>
+Let you save your code for later. This is nice because you do not have to remember what you did or write down instructions for later. Instead you can open the same file and re-run analyses. This is particularly useful if you are running the same analysis on different variables or different data. 
+
+*** 
+
+## R Scripts vs. Console
+
+</br>
+</br>
+</br>
+The console is at the bottom of the screen in R. You can enter commands into this area directly and quickly, but it is not great for saving. Scripts are good for saving, but less ideal for trying things out on the fly. 
+
+*** 
+
+## R Projects
+
+</br>
+</br>
+</br>
+
+An R Project is a feature of RStudio that lets you store your analysis script, a history file, versioning files and any data files that you analyze in R in one folder. 
+
+*** 
+
+## R Projects
+
+
+</br>
+</br>
+</br>
+
+An R Project can make your life easier by storing all your files in one project together. 
+
+***
+
+## R Projects
+
+</br>
+</br>
+</br>
+
+An R Project can make reproducibility easier by letting you directly code directions for accessing needed files (such as spreadsheets or tables of data), making it easier to automate. 
+
+
+
+***
+
+## R Projects
+
+
+</br>
+</br>
+</br>
+
+
+It will make life easier to keep the raw data files that you analyze in this same folder because then the project can access data without having to give too many instructions. 
+
+***
+
+## R Projects and GitHub
+
+</br>
+</br>
+</br>
+
+Version control is essentially the same as "track changes" in Word: a way to see what changes were made each time you update a file.
+
+***
+
+## R Projects and GitHub
+
+</br>
+</br>
+</br>
+
+Git is a system for tracking these changes. You can work with it directly in the command line. If you are interested in this, you can try:
+
+*https://www.codecademy.com/learn/learn-the-command-line
+*https://www.datacamp.com/courses/introduction-to-git-for-data-science
+
+***
+
+## R Projects and GitHub
+
+</br>
+</br>
+</br>
+
+Github is a website where people can store and share code, and track version changes. 
+
+***
+
+## R Projects and GitHub
+
+</br>
+</br>
+</br>
+
+Individuals can "fork" from an existing repository, make changes, save and commit them and then post the new version online. 
+
+***
+
+## R Projects and GitHub
+
+</br>
+</br>
+</br>
+
+You  can link your project to a GitHub repository by setting up a new project and selecting Version Control. 
+
+***
+
+## R Projects and GitHub
+
+</br>
+</br>
+</br>
+
+You can then provide the URL of a GitHub page. This lets you store a project online, update it and track changes. You can also work with others projects this way as well. To save your new versions you must save locally and then commit the changes. 
+
+For demo purposes: https://github.com/fredwillie/RScience2020
+
+You can directly download files to your project, or you can choose to go to a git repository on github, view the raw data and save that to somewhere on your computer. 
+
+***
+
+# R syntax
+
+
+## Running Commands
+
+
+Commands are instructions to R to do something.
+
+***
+
+## Running Commands
+
+</br>
+</br>
+</br>
+
+```{r echo = TRUE, eval=FALSE}
+mean(1:10)
+```
+
+
+***
+
+## Naming Variables, Lists, Dataframes and Functions
+
+</br>
+</br>
+</br>
+
+Sometimes you want to refer to a set of data (like the above list of 1 through 10). You can assign a Variable which names some value in R. 
+
+The normal assignment character is " <- " A keyboard shortcut is Alt/option - 
+
+***
+
+## Note on naming/assignment
+
+</br>
+</br>
+</br>
+
+
+
+Some people use = as an assignment operator. Technically this works but it may create issues with the order of operations. Most R users write <-, so I recommend following convention and using <-. Additionally some functions use = in their syntax (e.g. size = 10), so convention again normally does not use = for assignment. 
+
+Similarly you can assign variables left to right ->, but in practice few people do this and I do not recommend breaking convention. 
+
+***
+
+## Naming Variables, Lists, Dataframes and Functions
+
+
+```{r echo=TRUE}
+OneToTen <- (1:10)
+mean(OneToTen)
+
+```
+
+
+***
+
+## Pulling in Data 
+
+</br>
+</br>
+</br>
+
+One of the first things you will need to do when using R is pull in data, typically from something like a CSV file (a low-tech Excel file)
+
+***
+
+## Pulling in Data
+
+</br>
+</br>
+</br>
+
+Using R to analyze data stored in a separate raw file lets you keep your original data unchanged, helping to improve reproducibility.
+
+***
+
+## Pulling in Data
+
+</br>
+</br>
+</br>
+
+```{r echo = TRUE}
+nyc <- read.csv("NYC_HANES_DIAB.csv")
+```
+
+***
+
+## Pulling in Data
+
+</br>
+</br>
+</br>
+
+There are other types of data, and you can look up how to add them as data to your R analyses.
+
+***
+
+## Break Out Group
+
+On your own, create a new R Project in a new directory. A directory is just a file folder. I recommend doing this in a file folder on your computer rather than in Google Drive, as sometimes working in Drive will give you repeated annoying warnings about access. Save this somewhere that will make sense for you and name it something that will make sense later, like LearningR. 
+
+Create a variable for a list of numbers 10 through 20, and find the median value. 
+
+
+Try pulling in data:
+
+```{r echo = TRUE}
+
+```
+
+One possible solution is:
+
+>library(RCurl)
+>url <- getURL("https://raw.githubusercontent.com/fredwillie/RScience2020/master/NYC_HANES_DIAB.csv")
+> nycTest <- read.csv(text = url)
+
+What this does is sets a website, in this case the location of the raw NYC HANES data on github, then tells "read.csv()" to use that URL as its dataframe location. 
+
+
+
+***
+
+## Looking at your data
+
+</br>
+</br>
+</br>
+
+There are a few ways to get a sense of your data
+
+***
+
+## Looking at your data
+
+</br>
+</br>
+</br>
+
+To see a whole data.frame, try View(nyc) or:
+
+```{r echo=TRUE}
+head(nyc)
+```
+
+***
+
+## Looking at your data
+
+
+```{r echo = TRUE}
+summary(nyc)
+```
+
+***
+
+# Looking at your data
+
+```{r}
+install.packages("psyc", repos = "http://cran.us.r-project.org")
+library(psych)
+describe(nyc$LEAD)
+```
+***
+
+## Looking at your data
+
+```{r}
+install.packages("pastecs",repos = "http://cran.us.r-project.org")
+library(pastecs)
+stat.desc(nyc$LEAD)
+```
+
+
+***
+
+## Looking at your data
+
+</br>
+</br>
+</br>
+
+The numbers in the above are annoyingly formatted so we can modify this with round
+
+```{r}
+install.packages("pastecs",repos = "http://cran.us.r-project.org")
+library(pastecs)
+round(stat.desc(nyc$LEAD), 2)
+```
+
+
+
+
+
+
+***
+
+## R Indexing
+</br>
+</br>
+</br>
+
+Indexing is a way of accessing specific parts of a dataframe.
+
+***
+
+## R Indexing
+
+
+Two main approaches:
+
+- The name of the dataframe with a dollarsign followed by a variable: nyc$CADMIUM
+
+- The name of the dataframe with [rows, columns] written in square brackets: nyc[4,5]
+
+***
+
+## R Indexing
+
+You can combine indexing with assigning (<-) to overwrite cells of add new columns of data
+
+```{r}
+nyc[4,5]
+nyc[4,5] <- 5
+nyc[4,5]
+
+```
+
+
+To set it back
+
+```{r}
+nyc[4,5] <- 2
+```
+
+***
+
+## Indexing and assignments
+
+We could also add a new column:
+
+```{R}
+nyc[,24] <- nyc$CHOLESTEROLTOTAL/nyc$HDL
+```
+
+And then we can delete a column using a minus sign:
+
+```{r}
+nyc[,-24]
+head(nyc)
+```
+
+***
+
+
+## Problem Solving
+
+</br>
+</br>
+</br>
+
+There are too many commands in R to memorize them, also there is no need to do this and literally no one memorizes all the commands they use. 
+
+***
+
+## Problem Solving
+
+</br>
+</br>
+</br>
+
+R is case sensitive!
+
+***
+
+## Problem Solving
+
+</br>
+</br>
+</br>
+
+R is a machine! It won't know what you mean!
+
+***
+
+## Problem Solving
+
+</br>
+</br>
+</br>
+
+Look for **typos!**
+
+This can mean extra commas, periods, and parentheses that don't close. Sometimes the error message will clue you in, other times (most times?) not. 
+
+***
+
+## Problem Solving
+
+</br>
+</br>
+</br>
+
+If the console presents a blinking plus sign:
+
+'+
+
+after running a command, hit **ESC.**
+
+The plus sign means some set of parentheses or quotes was not closed
+
+***
+
+## Problem Solving
+
+</br>
+</br>
+</br>
+
+When in doubt, Google it. 
+
+
+Literally no one memorizes more than a handful of commands, and most of the time you will need to look up the specific syntax. 
+
+***
+
+## Problem Solving
+
+</br>
+</br>
+</br>
+
+My two favorite sites:
+
+
+>- Stack Overflow: a site where people pose questions and others try to answer them. https://stackoverflow.com/questions/
+
+>- Quick-R by DataCamp: Descriptions of how to do the regular things you may attempt in R. https://www.statmethods.net/stats/frequencies.html 
+
+***
+
+
+
+## Packages
+
+</br>
+</br>
+</br>
+
+Often the thing you want to do does not come with "out of the box" R (or you could do it but it's difficult)
+
+***
+
+## Packages
+
+
+Typically you will learn about these in articles like those on Stack Exchange, but some we will talk about here. The Tidyverse, a set of packages created by Hadley Wickham, are pretty common for data cleaning, analysis and visualization. 
+
+***
+
+## Packages
+
+
+Try installing it!
+
+```{r}
+install.packages("tidyverse",  repos = "http://cran.us.r-project.org")
+library(tidyverse)
+```
+
+***
+
+## Packages
+
+
+This gives you lots of nice tools for data cleaning and wrangling. 
+
+```{r echo=TRUE}
+hasDiab <- filter(nyc, DX_DBTS == 1)
+head(hasDiab)
+```
+
+*** 
+
+## Break Out Group 2 / Questions to Explore and Test Yourself
+
+>- Create a list of numbers 1 to 100 and name this list FirstHundred
+
+```{r}
+
+```
+
+>- On your own, explore nyc and find the median and mean Cadmium levels`
+
+
+>- Find summary information about the total blood mercury levels in our NYC HANES data (hint: names(nyc) will call the names of each column). What is the max value, what is the minimum value.  
+
+```{r}
+
+```
+
+>- Bonus/Challenge: What is the Standard Deviation and skewness of the blood mercury?
+
+```{r}
+
+```
+
+
+>- Install a package and load, such as "ggplot2" or "dplyr"
+
+```{r}
+
+```
+
+
+>- What is a directory? How can you look up the current directory in which you are working in R?
+
+```{r}
+
+```
+
+
+>- How does one read in a CSV file of data into R?
+
+```{r}
+
+```
+
+>- What two commands are needed to install and use a package in R?
+
+```{r}
+
+```
+
+>- What are reasons one would choose to use R for data analysis?
+
+
