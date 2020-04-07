@@ -1,0 +1,439 @@
+---
+title: "R for Scientific Researchers: Data Types and Structures"
+author: "Fred LaPolla"
+date: "4/7/2020"
+output: slidy_presentation
+---
+
+## Review
+
+R provides an environment to load in data and analyze it. 
+
+
+>- What is the command for loading in a CSV?
+
+>- What is one command we could use to summarize or get a sense of what is in our file?
+
+>- What is a package and what 2 commands do we need to install and run one?
+
+***
+
+## Objectives
+
+Students will be able to:
+
+>- Identify data types that R works with
+>- Name and explain the data structures that exist in R
+>- Look up the data structure of an object
+>- Change the data type of an object
+
+***
+
+## Starting up
+
+</br>
+</br>
+</br>
+
+Pulling in last week's data:
+
+```{r echo = TRUE}
+install.packages("RCurl", repos = "http://cran.us.r-project.org")
+library(RCurl)
+url <- getURL("https://raw.githubusercontent.com/fredwillie/RScience2020/master/NYC_HANES_DIAB.csv")
+nyc <- read.csv(text = url)
+```
+
+***
+
+## Data Types in R
+
+</br>
+</br>
+</br>
+
+R works with several types of data. Think of these as the sorts of things that appear in a given cell in a spreadsheet. 
+
+>- Character
+>- Numeric
+>- Integer
+>- Factor (i.e. categorical or ordinal variable)
+>- Logical (T/F)
+>- Complex (think the imaginary number i)
+
+***
+
+## Character
+
+
+</br>
+</br>
+</br>
+
+Character data means that R is treating text like it is words. 
+
+Imagine we created a spreadsheet of members of your lab. Everyone's name would be a character: Eg "Fred"
+
+**Note of caution:** sometimes R reads in data in ways that we do not want it to, if it sees even one random letter (say a typo) in a column of numbers it will treat that as a character. Sometimes it will read in character strings as a great deal of factor values. 
+
+***
+
+## Numeric and Integer
+
+</br>
+
+
+>- Numeric data is any number e.g. 12, 13.5 etc.
+>- Integer data is a rounded integer and is written with an L: e.g. 12L 13L etc.
+>- **Important** Sometimes what appears to us as a number is being read as a character. It will appear with quotes as "12" or "13.5" to let us know R is not reading it as a number. 
+
+***
+
+## Factor
+
+</br>
+</br>
+</br>
+
+A factor variable is a value that can have one of several options, e.g. Place of residence: Manhattan, Brooklyn, the Bronx, Queens, Staten Island, Other. 
+
+In R, factor variables can be ordered, e.g. First year, Second Year, Third Year students. These are often called ordinal variables.  Factors can also be unordered like in the NYC boros above. 
+
+***
+
+## Factor Levels and Labels
+
+</br>
+</br>
+</br>
+
+When you work with factor variables, the different choices are called "levels." You can rename levels using a levels() command, but it is important that the order of the levels match the existing order. 
+
+```{r}
+nyc$GENDER <- factor(nyc$GENDER, levels = 1:2)
+summary(nyc$GENDER)
+```
+
+
+```{r}
+levels(nyc$GENDER) <- c("Male", "Female")
+summary(nyc$GENDER)
+```
+
+***
+
+## Alternate approach with Labels
+
+You can also do this with labels for the levels. 
+
+An "in the weeds" explanation: Levels and labels are not the same as in SPSS, what this is doing is looking at the AGEGROUP column, saying that the groups (or levels) for this group are the integers 1,2,3, and then assigning as a name the Youth, Middle and Aged labels. 
+
+```{r}
+nyc$AGEGROUP <- factor(nyc$AGEGROUP, levels = 1:3, labels = c("Youth", "Middle", "Aged"))
+summary(nyc$AGEGROUP)
+```
+
+
+**Note:** Similar to the examples above, sometimes R reads in character strings as factors. If your cell/gene IDs are listing with "levels" you may have to change the type of data. 
+
+***
+
+## Logical
+
+</br>
+</br>
+</br>
+
+R understands TRUE and FALSE as concepts. 
+
+TRUE is equivalent to 1 and FALSE to 0. 
+
+This means you can find sums of arguments that meet criteria to see how many are true, or you can use means to find proportions. An example of finding the proportion can be seen:
+
+```{r}
+mean(nyc$SPAGE < 50)
+```
+
+To find the proportion of people under 50. This is because "nyc$SPAGE<50" runs through every value in the column and assigns TRUE, i.e. 1, if they are younger than 50, and FALSE, 0, if over 50. So mean is the same as summing all those ones and dividing by the total, which is the same as finding a proportion. 
+
+
+***
+
+## Determining the data type
+
+</br>
+</br>
+</br>
+
+If you run class() on a column of data, you will get the data type of that column:
+
+```{r}
+class(nyc$AGEGROUP)
+```
+
+
+Try on your own and find the class of three columns of data. What are they?
+
+```{r}
+
+```
+
+
+
+***
+
+## Data Structures in R
+
+</br>
+</br>
+</br>
+
+R holds several structures of data. In order from most complex to most simple:
+
+>- Dataframes
+>- Matrices
+>- Lists
+>- Vectors
+
+***
+
+## Dataframes
+</br>
+</br>
+</br>
+**Note:** My background is such that spreadsheets (like Excel) are a normal way to store/organize data.
+
+A dataframe is basically R's spreadsheet. 
+
+***
+
+## Dataframes
+
+</br>
+</br>
+</br>
+
+Dataframes have columns and rows of data. The data in these different columns can be of different types. Imagine making a spreadsheet of people in your lab: their name (character), their age (integer), their field of study (factor). Each column will have one type of data, but any given column can be a different data type from the column next to it. 
+
+Each row contains all the types of data for any given record, or in this case, member of your lab. 
+
+***
+
+## Matrices
+
+</br>
+</br>
+</br>
+
+A matrix is like a dataframe but all data in the columns and rows are of the **same type**.
+
+This may sound trivial but is important to bioinformatics work!
+
+If we have a matrix of gene expression data and want to make a heatmap, every cell must contain a number. If there is a stray mark or we read in data, we may need to convert the data after. Even one letter in a cell will lead R to conclude that all of the numbers are actually characters. 
+
+
+
+***
+
+## Lists
+
+</br>
+</br> 
+</br>
+
+Lists are like one row of a spreadsheet. Using our example from above, a list might contain the name of one person in your lab, their age, their field of work and other information. 
+
+***
+
+## Vectors
+
+</br>
+</br>
+</br>
+
+A vector is like a list but with everything of one type of data: i.e. all numbers, all factors, etc. 
+
+If you perform some operation on vectors, the vector will be processed one after the next. If you perform an operation on two vectors, for example multiplying them, the operations will go down the list of each vector:
+
+```{r }
+x <- c(1,2,3,4)
+y <- c(2,3)
+x*y
+```
+
+***
+
+## Binding Vectors
+
+</br>
+</br>
+</br>
+
+You can combine vectors to be a matrix with rbind() for combining rows and cbind() for columns. If the columns or rows are evenly divisible, they will recycle, but if for example you tried to r bind a vector with 4 objects and a vector with 5 objects, you will get an error. 
+
+```{r}
+rbind(x, y)
+
+z <- c(5,8,0,9,10)
+rbind(x,z)
+```
+
+
+You can also apply names using names() for example:
+
+```{r}
+names(x)<- c("First", "Second", "Third", "Fourth")
+x
+```
+
+
+***
+
+## Finding out what kind of data structure
+
+</br>
+</br>
+</br>
+
+Just like data type, you can use class on a whole data object to find out what structure it has:
+
+```{r}
+class(nyc)
+```
+
+
+
+***
+
+## Let's explore some data
+
+Find a dataset and read it in. If you do not have one, an easy option might be last week's NYC HANES data.
+
+*** 
+
+## How to tell what kind of data you are working with
+
+What kind of data is in your data set?
+
+```{r}
+nyc <- read.csv("/Users/lapolf01/Documents/NYC_HANES_DIAB.csv")
+
+class(nyc)
+
+class(nyc$LEAD)
+
+class(nyc$KEY)
+
+class(nyc$AGEGROUP)
+
+class(nyc[4,5])
+```
+
+
+This can be applied to an object like a dataframe or matrix, or to individual pieces of data
+
+
+*** 
+
+## Exploration
+
+What kind of data are you working with?
+
+
+***
+
+## Changing data types
+
+Frequently when we load data into R, R will assume the wrong type of data. For example in our NYC HANES, look at what type of data spage is classified as:
+
+```{r}
+class(nyc$AGEGROUP)
+```
+
+Integer feels wrong for a group, so we can reset it using a factor command. Let's look up what the factor command offers:
+
+```{r}
+?factor
+```
+
+The main things to note are x, the vector we are transforming (e.g. a column in a dataframe), levels (i.e. how many groups are there), labels (i.e. what are the codes for in text)
+
+In the code below we are going to assign groups, or levels, to this factor and overwrite the existing column with this data. *WARNING* Only run this command once, as once we overwrite the command, running it again will yield all NAs and we will need to pull in the data to correct it. 
+
+```{r}
+nyc$AGEGROUP <- factor(nyc$AGEGROUP, levels = 1:3, labels = c("youngest", "middlest", "oldest"))
+summary(nyc$AGEGROUP)
+```
+
+*** 
+
+## Confusing Note: as.factor() and factor(), as.matrix() vs matrix() etc.
+
+</br>
+</br>
+</br>
+
+You can often coerce data types into another type with as.[data type]. For example:
+
+```{r}
+as.integer(TRUE)
+```
+
+
+Normally, the differences between for example as.factor() or factor() or as.matrix() or matrix() are not always super apparent. If your results are not what you expect, you might try as.factor() vs factor() to see if one works how you want.
+
+***
+
+## On Your Own
+
+Make a factor variable out of the GENDER variable. In NYC HANES, 1 = m and 2 = f. 
+
+
+*** 
+
+## Reclassifying Data Structures
+
+As we have seen, sometimes R reads in data as the wrong type, but it can also read in the wrong data structure. Imagine we had a matrix that when we pulled in R thought it was a dataframe:
+
+```{r}
+WannaMatrix <- nyc[5:10, 6:9]
+head(WannaMatrix)
+class(WannaMatrix)
+```
+
+*** 
+
+## Reclassifying Data Structures
+
+
+Here we can reclassify it to be a matrix:
+
+```{r}
+WannaMatrix <- as.matrix(WannaMatrix,nrow = 6, ncol = 4) 
+class(WannaMatrix)
+class(WannaMatrix[4,1])
+```
+
+This may become important if you read in data in the wrong format, as visualizations like heatmaps will likely be done in matrices rather than dataframes.  
+
+
+***
+
+## On Your Own
+
+>- When you read in a .csv file into R, what class is the object that you read in (like nyc)?
+
+>- What command can you use to determine what type of data is in a column?
+
+>- Provide a command to find the type of data in the DX_DBTS column of nyc. 
+
+>- Provide the same command the type of data but use the other way of indexing from what you did above. 
+
+>- In the above Matrix example we made a subset of which columns?
+
+>- What would happen if we had chosen the first 4 columns and made a matrix? What would the class of the cells in this matrix be? Why?
+
+>- If we make a vector,vec<- c(3,9,4,7,8,9), and multiply it by WannaMatrix, what is the value in the third row, third column? 
+
+>- What happens if instead we made a vector vec2 <- c(3,9,4,7,8) and multiply it by WannaMatrix, what is the third row, third column value? What is going on? 
+
