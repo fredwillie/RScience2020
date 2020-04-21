@@ -574,6 +574,9 @@ Fred LaPolla
 <p>For demo purposes: <a href="https://github.com/fredwillie/RScience2020" class="uri">https://github.com/fredwillie/RScience2020</a></p>
 <p>You can directly download files to your project, or you can choose to go to a git repository on github, view the raw data and save that to somewhere on your computer.</p>
 </div>
+<div id="mentimeter-question" class="slide section level1">
+<h1>Mentimeter Question</h1>
+</div>
 <div id="r-syntax" class="slide section level1">
 <h1>R syntax</h1>
 <h2 id="running-commands">Running Commands</h2>
@@ -584,6 +587,13 @@ Fred LaPolla
 <h2 id="running-commands-1">Running Commands</h2>
 <p></br> </br> </br></p>
 <div class="sourceCode" id="cb5"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb5-1" data-line-number="1"><span class="kw">mean</span>(<span class="dv">1</span><span class="op">:</span><span class="dv">10</span>)</a></code></pre></div>
+</div>
+<div class="slide section level1">
+
+<h2 id="comments">Comments</h2>
+<p></br> </br> </br></p>
+<p>In an R Script, a “#” makes your code into a comment, or text that you a human being can read but that R skips over.</p>
+<p>You should alsways add some human readable explanation of what you are doing. This will save you time later so that you do not have to try to figure out what you did.</p>
 </div>
 <div class="slide section level1">
 
@@ -606,6 +616,9 @@ Fred LaPolla
 <a class="sourceLine" id="cb6-2" data-line-number="2"><span class="kw">mean</span>(OneToTen)</a></code></pre></div>
 <pre><code>## [1] 5.5</code></pre>
 </div>
+<div id="mentimeter-question-1" class="slide section level1">
+<h1>Mentimeter Question</h1>
+</div>
 <div class="slide section level1">
 
 <h2 id="pulling-in-data">Pulling in Data</h2>
@@ -622,7 +635,13 @@ Fred LaPolla
 
 <h2 id="pulling-in-data-2">Pulling in Data</h2>
 <p></br> </br> </br></p>
-<div class="sourceCode" id="cb8"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb8-1" data-line-number="1">nyc &lt;-<span class="st"> </span><span class="kw">read.csv</span>(<span class="st">&quot;NYC_HANES_DIAB.csv&quot;</span>)</a></code></pre></div>
+<div class="sourceCode" id="cb8"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb8-1" data-line-number="1"><span class="kw">install.packages</span>(<span class="st">&quot;RCurl&quot;</span>, <span class="dt">repos =</span> <span class="st">&quot;http://cran.us.r-project.org&quot;</span>)</a></code></pre></div>
+<pre><code>## 
+## The downloaded binary packages are in
+##  /var/folders/wh/kxxcb38x3970_qdg14gscpd1k2bqnj/T//RtmpmzcKVW/downloaded_packages</code></pre>
+<div class="sourceCode" id="cb10"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb10-1" data-line-number="1"><span class="kw">library</span>(RCurl)</a>
+<a class="sourceLine" id="cb10-2" data-line-number="2">url &lt;-<span class="st"> </span><span class="kw">getURL</span>(<span class="st">&quot;https://raw.githubusercontent.com/fredwillie/RScience2020/master/NYC_HANES_DIAB.csv&quot;</span>)</a>
+<a class="sourceLine" id="cb10-3" data-line-number="3">nyc &lt;-<span class="st"> </span><span class="kw">read.csv</span>(<span class="dt">text =</span> url)</a></code></pre></div>
 </div>
 <div class="slide section level1">
 
@@ -641,6 +660,7 @@ Fred LaPolla
 <p>library(RCurl) url &lt;- getURL(“<a href="https://raw.githubusercontent.com/fredwillie/RScience2020/master/NYC_HANES_DIAB.csv" class="uri">https://raw.githubusercontent.com/fredwillie/RScience2020/master/NYC_HANES_DIAB.csv</a>”) nycTest &lt;- read.csv(text = url)</p>
 </blockquote>
 <p>What this does is sets a website, in this case the location of the raw NYC HANES data on github, then tells “read.csv()” to use that URL as its dataframe location.</p>
+<p>Go to Mentimeter and give a thumbs up when done.</p>
 </div>
 <div class="slide section level1">
 
@@ -653,7 +673,7 @@ Fred LaPolla
 <h2 id="looking-at-your-data-1">Looking at your data</h2>
 <p></br> </br> </br></p>
 <p>To see a whole data.frame, try View(nyc) or:</p>
-<div class="sourceCode" id="cb9"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb9-1" data-line-number="1"><span class="kw">head</span>(nyc)</a></code></pre></div>
+<div class="sourceCode" id="cb11"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb11-1" data-line-number="1"><span class="kw">head</span>(nyc)</a></code></pre></div>
 <pre><code>##       KEY GENDER SPAGE AGEGROUP HSQ_1 UCREATININE UALBUMIN        UACR
 ## 1 134040A      1    29        1     2         105    0.707 0.006733333
 ## 2 134240B      1    27        1     2         296   18.000 6.000000000
@@ -686,7 +706,7 @@ Fred LaPolla
 <div class="slide section level1">
 
 <h2 id="looking-at-your-data-2">Looking at your data</h2>
-<div class="sourceCode" id="cb11"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb11-1" data-line-number="1"><span class="kw">summary</span>(nyc)</a></code></pre></div>
+<div class="sourceCode" id="cb13"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb13-1" data-line-number="1"><span class="kw">summary</span>(nyc)</a></code></pre></div>
 <pre><code>##       KEY           GENDER         SPAGE          AGEGROUP    
 ##  133370A:   1   Min.   :1.00   Min.   :20.00   Min.   :1.000  
 ##  133370B:   1   1st Qu.:1.00   1st Qu.:30.00   1st Qu.:1.000  
@@ -738,10 +758,10 @@ Fred LaPolla
 </div>
 <div id="looking-at-your-data-3" class="slide section level1">
 <h1>Looking at your data</h1>
-<div class="sourceCode" id="cb13"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb13-1" data-line-number="1"><span class="kw">install.packages</span>(<span class="st">&quot;psyc&quot;</span>, <span class="dt">repos =</span> <span class="st">&quot;http://cran.us.r-project.org&quot;</span>)</a></code></pre></div>
+<div class="sourceCode" id="cb15"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb15-1" data-line-number="1"><span class="kw">install.packages</span>(<span class="st">&quot;psyc&quot;</span>, <span class="dt">repos =</span> <span class="st">&quot;http://cran.us.r-project.org&quot;</span>)</a></code></pre></div>
 <pre><code>## Warning: package 'psyc' is not available (for R version 3.6.1)</code></pre>
-<div class="sourceCode" id="cb15"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb15-1" data-line-number="1"><span class="kw">library</span>(psych)</a>
-<a class="sourceLine" id="cb15-2" data-line-number="2"><span class="kw">describe</span>(nyc<span class="op">$</span>LEAD)</a></code></pre></div>
+<div class="sourceCode" id="cb17"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb17-1" data-line-number="1"><span class="kw">library</span>(psych)</a>
+<a class="sourceLine" id="cb17-2" data-line-number="2"><span class="kw">describe</span>(nyc<span class="op">$</span>LEAD)</a></code></pre></div>
 <pre><code>##    vars    n mean   sd median trimmed  mad  min   max range skew kurtosis
 ## X1    1 1201 1.34 1.12   1.06    1.17 0.57 0.23 16.62 16.39 5.79    59.76
 ##      se
@@ -750,12 +770,12 @@ Fred LaPolla
 <div class="slide section level1">
 
 <h2 id="looking-at-your-data-4">Looking at your data</h2>
-<div class="sourceCode" id="cb17"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb17-1" data-line-number="1"><span class="kw">install.packages</span>(<span class="st">&quot;pastecs&quot;</span>,<span class="dt">repos =</span> <span class="st">&quot;http://cran.us.r-project.org&quot;</span>)</a></code></pre></div>
+<div class="sourceCode" id="cb19"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb19-1" data-line-number="1"><span class="kw">install.packages</span>(<span class="st">&quot;pastecs&quot;</span>,<span class="dt">repos =</span> <span class="st">&quot;http://cran.us.r-project.org&quot;</span>)</a></code></pre></div>
 <pre><code>## 
 ## The downloaded binary packages are in
-##  /var/folders/wh/kxxcb38x3970_qdg14gscpd1k2bqnj/T//RtmpGnysvs/downloaded_packages</code></pre>
-<div class="sourceCode" id="cb19"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb19-1" data-line-number="1"><span class="kw">library</span>(pastecs)</a>
-<a class="sourceLine" id="cb19-2" data-line-number="2"><span class="kw">stat.desc</span>(nyc<span class="op">$</span>LEAD)</a></code></pre></div>
+##  /var/folders/wh/kxxcb38x3970_qdg14gscpd1k2bqnj/T//RtmpmzcKVW/downloaded_packages</code></pre>
+<div class="sourceCode" id="cb21"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb21-1" data-line-number="1"><span class="kw">library</span>(pastecs)</a>
+<a class="sourceLine" id="cb21-2" data-line-number="2"><span class="kw">stat.desc</span>(nyc<span class="op">$</span>LEAD)</a></code></pre></div>
 <pre><code>##      nbr.val     nbr.null       nbr.na          min          max 
 ## 1.201000e+03 0.000000e+00 3.260000e+02 2.312000e-01 1.662020e+01 
 ##        range          sum       median         mean      SE.mean 
@@ -768,12 +788,12 @@ Fred LaPolla
 <h2 id="looking-at-your-data-5">Looking at your data</h2>
 <p></br> </br> </br></p>
 <p>The numbers in the above are annoyingly formatted so we can modify this with round</p>
-<div class="sourceCode" id="cb21"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb21-1" data-line-number="1"><span class="kw">install.packages</span>(<span class="st">&quot;pastecs&quot;</span>,<span class="dt">repos =</span> <span class="st">&quot;http://cran.us.r-project.org&quot;</span>)</a></code></pre></div>
+<div class="sourceCode" id="cb23"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb23-1" data-line-number="1"><span class="kw">install.packages</span>(<span class="st">&quot;pastecs&quot;</span>,<span class="dt">repos =</span> <span class="st">&quot;http://cran.us.r-project.org&quot;</span>)</a></code></pre></div>
 <pre><code>## 
 ## The downloaded binary packages are in
-##  /var/folders/wh/kxxcb38x3970_qdg14gscpd1k2bqnj/T//RtmpGnysvs/downloaded_packages</code></pre>
-<div class="sourceCode" id="cb23"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb23-1" data-line-number="1"><span class="kw">library</span>(pastecs)</a>
-<a class="sourceLine" id="cb23-2" data-line-number="2"><span class="kw">round</span>(<span class="kw">stat.desc</span>(nyc<span class="op">$</span>LEAD), <span class="dv">2</span>)</a></code></pre></div>
+##  /var/folders/wh/kxxcb38x3970_qdg14gscpd1k2bqnj/T//RtmpmzcKVW/downloaded_packages</code></pre>
+<div class="sourceCode" id="cb25"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb25-1" data-line-number="1"><span class="kw">library</span>(pastecs)</a>
+<a class="sourceLine" id="cb25-2" data-line-number="2"><span class="kw">round</span>(<span class="kw">stat.desc</span>(nyc<span class="op">$</span>LEAD), <span class="dv">2</span>)</a></code></pre></div>
 <pre><code>##      nbr.val     nbr.null       nbr.na          min          max 
 ##      1201.00         0.00       326.00         0.23        16.62 
 ##        range          sum       median         mean      SE.mean 
@@ -800,21 +820,21 @@ Fred LaPolla
 
 <h2 id="r-indexing-2">R Indexing</h2>
 <p>You can combine indexing with assigning (&lt;-) to overwrite cells of add new columns of data</p>
-<div class="sourceCode" id="cb25"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb25-1" data-line-number="1">nyc[<span class="dv">4</span>,<span class="dv">5</span>]</a></code></pre></div>
+<div class="sourceCode" id="cb27"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb27-1" data-line-number="1">nyc[<span class="dv">4</span>,<span class="dv">5</span>]</a></code></pre></div>
 <pre><code>## [1] 2</code></pre>
-<div class="sourceCode" id="cb27"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb27-1" data-line-number="1">nyc[<span class="dv">4</span>,<span class="dv">5</span>] &lt;-<span class="st"> </span><span class="dv">5</span></a>
-<a class="sourceLine" id="cb27-2" data-line-number="2">nyc[<span class="dv">4</span>,<span class="dv">5</span>]</a></code></pre></div>
+<div class="sourceCode" id="cb29"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb29-1" data-line-number="1">nyc[<span class="dv">4</span>,<span class="dv">5</span>] &lt;-<span class="st"> </span><span class="dv">5</span></a>
+<a class="sourceLine" id="cb29-2" data-line-number="2">nyc[<span class="dv">4</span>,<span class="dv">5</span>]</a></code></pre></div>
 <pre><code>## [1] 5</code></pre>
 <p>To set it back</p>
-<div class="sourceCode" id="cb29"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb29-1" data-line-number="1">nyc[<span class="dv">4</span>,<span class="dv">5</span>] &lt;-<span class="st"> </span><span class="dv">2</span></a></code></pre></div>
+<div class="sourceCode" id="cb31"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb31-1" data-line-number="1">nyc[<span class="dv">4</span>,<span class="dv">5</span>] &lt;-<span class="st"> </span><span class="dv">2</span></a></code></pre></div>
 </div>
 <div class="slide section level1">
 
 <h2 id="indexing-and-assignments">Indexing and assignments</h2>
 <p>We could also add a new column:</p>
-<div class="sourceCode" id="cb30"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb30-1" data-line-number="1">nyc[,<span class="dv">24</span>] &lt;-<span class="st"> </span>nyc<span class="op">$</span>CHOLESTEROLTOTAL<span class="op">/</span>nyc<span class="op">$</span>HDL</a></code></pre></div>
+<div class="sourceCode" id="cb32"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb32-1" data-line-number="1">nyc[,<span class="dv">24</span>] &lt;-<span class="st"> </span>nyc<span class="op">$</span>CHOLESTEROLTOTAL<span class="op">/</span>nyc<span class="op">$</span>HDL</a></code></pre></div>
 <p>And then we can delete a column using a minus sign:</p>
-<div class="sourceCode" id="cb31"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb31-1" data-line-number="1">nyc[,<span class="op">-</span><span class="dv">24</span>]</a></code></pre></div>
+<div class="sourceCode" id="cb33"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb33-1" data-line-number="1">nyc[,<span class="op">-</span><span class="dv">24</span>]</a></code></pre></div>
 <pre><code>##          KEY GENDER SPAGE AGEGROUP HSQ_1 UCREATININE UALBUMIN         UACR
 ## 1    134040A      1    29        1     2         105    0.707 6.733333e-03
 ## 2    134240B      1    27        1     2         296   18.000 6.000000e+00
@@ -6927,7 +6947,7 @@ Fred LaPolla
 ## 1525     100   0.0350         123
 ## 1526      NA       NA          NA
 ## 1527      93   0.0350         140</code></pre>
-<div class="sourceCode" id="cb33"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb33-1" data-line-number="1"><span class="kw">head</span>(nyc)</a></code></pre></div>
+<div class="sourceCode" id="cb35"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb35-1" data-line-number="1"><span class="kw">head</span>(nyc)</a></code></pre></div>
 <pre><code>##       KEY GENDER SPAGE AGEGROUP HSQ_1 UCREATININE UALBUMIN        UACR
 ## 1 134040A      1    29        1     2         105    0.707 0.006733333
 ## 2 134240B      1    27        1     2         296   18.000 6.000000000
@@ -6956,6 +6976,9 @@ Fred LaPolla
 ## 4   0.0350          81 3.452381
 ## 5   0.0514         132 3.377049
 ## 6   0.0350          58 2.307692</code></pre>
+</div>
+<div id="mentimeter-question-2" class="slide section level1">
+<h1>Mentimeter Question</h1>
 </div>
 <div class="slide section level1">
 
@@ -7025,31 +7048,32 @@ Fred LaPolla
 
 <h2 id="packages-2">Packages</h2>
 <p>Try installing it!</p>
-<div class="sourceCode" id="cb35"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb35-1" data-line-number="1"><span class="kw">install.packages</span>(<span class="st">&quot;tidyverse&quot;</span>,  <span class="dt">repos =</span> <span class="st">&quot;http://cran.us.r-project.org&quot;</span>)</a></code></pre></div>
+<div class="sourceCode" id="cb37"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb37-1" data-line-number="1"><span class="kw">install.packages</span>(<span class="st">&quot;tidyverse&quot;</span>,  <span class="dt">repos =</span> <span class="st">&quot;http://cran.us.r-project.org&quot;</span>)</a></code></pre></div>
 <pre><code>## 
 ## The downloaded binary packages are in
-##  /var/folders/wh/kxxcb38x3970_qdg14gscpd1k2bqnj/T//RtmpGnysvs/downloaded_packages</code></pre>
-<div class="sourceCode" id="cb37"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb37-1" data-line-number="1"><span class="kw">library</span>(tidyverse)</a></code></pre></div>
+##  /var/folders/wh/kxxcb38x3970_qdg14gscpd1k2bqnj/T//RtmpmzcKVW/downloaded_packages</code></pre>
+<div class="sourceCode" id="cb39"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb39-1" data-line-number="1"><span class="kw">library</span>(tidyverse)</a></code></pre></div>
 <pre><code>## ── Attaching packages ───────────────────────────────────────── tidyverse 1.3.0 ──</code></pre>
 <pre><code>## ✔ ggplot2 3.2.1     ✔ purrr   0.3.3
 ## ✔ tibble  2.1.3     ✔ dplyr   0.8.3
 ## ✔ tidyr   1.0.0     ✔ stringr 1.4.0
 ## ✔ readr   1.3.1     ✔ forcats 0.4.0</code></pre>
 <pre><code>## ── Conflicts ──────────────────────────────────────────── tidyverse_conflicts() ──
-## ✖ ggplot2::%+%()   masks psych::%+%()
-## ✖ ggplot2::alpha() masks psych::alpha()
-## ✖ tidyr::extract() masks pastecs::extract()
-## ✖ dplyr::filter()  masks stats::filter()
-## ✖ dplyr::first()   masks pastecs::first()
-## ✖ dplyr::lag()     masks stats::lag()
-## ✖ dplyr::last()    masks pastecs::last()</code></pre>
+## ✖ ggplot2::%+%()    masks psych::%+%()
+## ✖ ggplot2::alpha()  masks psych::alpha()
+## ✖ tidyr::complete() masks RCurl::complete()
+## ✖ tidyr::extract()  masks pastecs::extract()
+## ✖ dplyr::filter()   masks stats::filter()
+## ✖ dplyr::first()    masks pastecs::first()
+## ✖ dplyr::lag()      masks stats::lag()
+## ✖ dplyr::last()     masks pastecs::last()</code></pre>
 </div>
 <div class="slide section level1">
 
 <h2 id="packages-3">Packages</h2>
 <p>This gives you lots of nice tools for data cleaning and wrangling.</p>
-<div class="sourceCode" id="cb41"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb41-1" data-line-number="1">hasDiab &lt;-<span class="st"> </span><span class="kw">filter</span>(nyc, DX_DBTS <span class="op">==</span><span class="st"> </span><span class="dv">1</span>)</a>
-<a class="sourceLine" id="cb41-2" data-line-number="2"><span class="kw">head</span>(hasDiab)</a></code></pre></div>
+<div class="sourceCode" id="cb43"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb43-1" data-line-number="1">hasDiab &lt;-<span class="st"> </span><span class="kw">filter</span>(nyc, DX_DBTS <span class="op">==</span><span class="st"> </span><span class="dv">1</span>)</a>
+<a class="sourceLine" id="cb43-2" data-line-number="2"><span class="kw">head</span>(hasDiab)</a></code></pre></div>
 <pre><code>##       KEY GENDER SPAGE AGEGROUP HSQ_1 UCREATININE UALBUMIN         UACR
 ## 1 447560B      1    31        1     4          89    4.000  4.000000000
 ## 2 448870B      1    31        1     3         156   78.000 50.000000000

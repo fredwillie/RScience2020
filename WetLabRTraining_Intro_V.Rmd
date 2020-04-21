@@ -1,0 +1,262 @@
+---
+title: "Hypothesis Testing"
+author: "Fred LaPolla"
+date: "4/21/2020"
+output: slidy_presentation
+---
+
+```{r setup, include=TRUE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+## Hypothesis Testing
+
+Tests to see if differences appear in groups we are analyzing. 
+
+Typically we want to see if the null hypothesis is true or can be rejected. 
+
+Results are termed in rejection of the null or failure to reject the null. 
+
+```{r}
+library(RCurl)
+url <-getURL("https://raw.githubusercontent.com/fredwillie/RScience2020/master/NYC_HANES_DIAB.csv")
+nyc <- read.csv(text = url)
+nyc <- na.omit(nyc)
+nyc$AGEGROUP <- factor(nyc$AGEGROUP, levels = 1:3, labels = c("Youngest", "Middle", "Aged"))
+nyc$GENDER <- factor(nyc$GENDER, levels = 1:2, labels = c("male", "female"))
+# Rename the HSQ_1 factor for identification
+  nyc$HSQ_1 <- factor(nyc$HSQ_1, levels = 1:5, labels=c("Excellent","Very Good","Good", "Fair", "Poor"))
+  # Rename the DX_DBTS as a factor
+  nyc$DX_DBTS <- factor(nyc$DX_DBTS,levels = 1:3, labels=c("Diabetes with DX","Diabetes with no DX","No Diabetes"))
+
+```
+
+
+***
+
+## P Values
+
+Important to note that a P value is just the odds of finding a result as "far" from the mean of the control group assuming the null hypothesis was true. So .05 means that only 5% of the time we would assume a result as far from the control group's mean assuming there is no difference. 
+
+This is important because in data like RNA Seq Analysis, we may have 1000s of rows, simply see which results are significant at .05 is **Not** going to be meaningful. 
+
+**Remember** a P value < .05, does not mean either that your finding is "true" and it definitely does not mean it is biologically or scientifically significant.
+
+A p value should be only one part of a broader context, including confidence intervals and honest assessment of how likely the findings were in the first place.
+
+There is an on-going push among statisticians to de-emphasize the p value. 
+
+If you have a very small p in r, you get a value like "p-value < 2.2e-16" but for publishing you should write something like "p < .001"
+
+
+
+
+***
+
+## Chi Squared X^2
+
+Used for assessing if the proportions of of nominal (factor) variables are what we would expect if the groups were equal of not.
+
+Chi square assumes > 5 observations per cell. Null hypothesis is that rows and columns are independent. 
+
+```{r}
+chisq.test(nyc$AGEGROUP, nyc$DX_DBTS)
+```
+
+***
+
+## Adding contingency tables
+
+Typically we will also want to see the actual tables. Creating a table will show us the total nubers, prop.table will tell us the percentage by either row (setting the margin to 1) or column (setting the margin to 2)
+
+```{r}
+AgeDxTable <- table(nyc$AGEGROUP, nyc$DX_DBTS)
+AgeDxTable
+ # Proportions of Age by DX per row
+ prop.table(AgeDxTable, 1)
+ # Proportions of Age by DX per column
+ prop.table(AgeDxTable, 2)
+chisq.test(nyc$AGEGROUP, nyc$DX_DBTS)
+```
+
+
+
+
+***
+
+## Parametric Tests
+
+### T Test
+
+T Test is used for comparing the means between two normally distributed groups. The null hypothesis says there is no difference between means of the groups. 
+
+First we will review assessing normality. 
+
+```{r, echo = TRUE}
+par(mfrow = c(1,2))
+library(psych)
+library(dplyr)
+by( nyc$CHOLESTEROLTOTAL,nyc$GENDER, hist)
+psych::describe(nyc$CHOLESTEROLTOTAL)
+femChol <- nyc %>% filter(GENDER == "female") 
+maleChol <- nyc %>% filter(GENDER == "male")
+psych::describe(femChol$CHOLESTEROLTOTAL)
+psych::describe(maleChol$CHOLESTEROLTOTAL)
+
+## close enough for the demo
+```
+
+***
+
+## T-Tests
+
+Now to actually do the T-Test: t.test compares the means:
+
+```{r}
+t.test(femChol$CHOLESTEROLTOTAL, maleChol$CHOLESTEROLTOTAL, paired = FALSE, alternative = "two.sided", conf.level = 0.95, var.equal = TRUE)
+```
+
+Things to note, paired is set to false. Paired would mean they were the same people/subjects. So for example if we weighed people at the start of a test, then put them on a diet and weighed at the end, that would be paired. Here the male and female groups are totally separate people. 
+
+The tails "alternative" is two.sided. It could be lesser or greater if we were doing a single tailed test, but this is less common. 
+
+We also set variance as equal because the variances were close. A more conservative approach would be to set as false. 
+
+***
+
+## Non-Parametric Tests for Comparing Means
+
+### Mann-Whitney (unpaired) and Wilcoxon (paired)
+
+**Confusing note:** Both of these are called wilcox.test() in R, and we then set an argument to be paired = TRUE or FALSE. 
+
+Remember paired means they are the same subjects before and after, unpaired means they are separate. 
+
+Also non-parametric means not normally distributed. Outliers will throw off t-tests and parametric tests. 
+
+```{r}
+## Because paired = False, technically this is a Mann-Whitney test
+wilcox.test( nyc$COTININE ~ nyc$GENDER, paired = FALSE)
+```
+
+If these were before and after data, we could perform the Wilcoxon test by setting paired = TRUE. 
+
+*** 
+
+## Correlations
+
+### Pearson (parametric) or Spearman (non-parametric)
+
+Note here we are doing cor.test(), but when we made heatmaps we did just cor(). The difference is cor.test provides the 95% confidence intervals and a p value, as well as the pearson's R or spearman's Rho, where cor just provides R/Rho. 
+
+```{r}
+cor.test(nyc$CHOLESTEROLTOTAL, nyc$SPAGE, method = "pearson")
+```
+
+***
+
+## Correlations with small values
+
+For small n (less than 5 observations in a cell), the test for fisher's exact test is:
+
+fisher.test()
+
+```{r}
+fisher.test(nyc$AGEGROUP, nyc$DX_DBTS)
+```
+
+
+
+***
+
+## Non-Parametric: Spearman
+
+```{r}
+cor.test(nyc$GLUCOSE, nyc$A1C, method = "spearman")
+```
+
+
+
+***
+
+## Analysis of Variance ANOVA
+
+A test that assumes normal distribution for assessing difference in means when you have multiple groups. There are multiple ways to do this, and one is to run aov() which does a linear regression on the back end. The result of this then should be summarized or run through ANOVA. 
+
+```{r}
+CholDiabAnova <- aov(nyc$CHOLESTEROLTOTAL ~  nyc$DX_DBTS)
+summary(CholDiabAnova)
+anova(CholDiabAnova)
+
+```
+
+
+
+***
+
+## Linear Regression
+
+The above aov() command is calling a lm() command for linear model fitting on the back end. We can also write in our own linear model. 
+
+Briefly, modelling is mathematically creating a description of the factors that impact some outcome, and linear modelling is used for some continuous outcome. lm() will allow us to control for multiple variables to say as some independent variable increases, does out outcome increase or decrease. 
+
+To actually do this in R, the format will be:
+
+lm(DependentVariable(outcomeOfInterest) ~ Independent Var 1 + Independent Var 2, dataset)
+
+If we wanted to add an interaction variable, it would be + Independent Var 1: INdependent Var 2 on the end.
+
+
+
+```{r}
+## Please ignore that statistically this model is problematic because glucose and A1C are not really independent, the point is to illustrate
+##what lm() looks like
+glucoseModel <- lm(GLUCOSE ~ A1C + DX_DBTS, nyc)
+summary(glucoseModel)
+```
+
+So we can see above: residuals or error of points in our model. We could plot and see that these are not normally distributed and that the assumptions of the linear model are not being met. 
+
+Next we see a table of Coefficients, basically the amount that an increase of one (or change of status in the case of DX_DBTS) contributes to a change in glucose levels. The standard error of those estimated coefficients is next, followed by a t statistic or how many standard deviations our coefficient is from a mean of zero. Finally the p value with stars if it is "significant." 
+
+Going down: residual error, basically how much variability would remain from our model to points in our data. This asses how well our model fits the observations. 
+
+R^2 predicts what amount of variability is accounted for by the model. Finally the F statistic is used to estimate if the variables are related. 
+
+So while this specific model does not meet the assumptions of a linear regression, this is how you would actually build one in R. 
+
+
+
+***
+
+## Power Assessment
+
+Assessing power will help readers of your research to know the likelihood of type II error (saying there is not a difference when in fact one exists). Underpowered studies are a major problem in pre-clinical research that limit the replicability of findings. It is best to be transparent about providing a power calculation so that readers will know if results need to be confirmed with larger studies. 
+
+Check out the information provided by Stat Methods on using the pwr package for power tests for different common hypothesis tests: https://www.statmethods.net/stats/power.html
+
+
+```{r}
+library(pwr)       
+pwr.t2n.test(n1=278  , 
+             n2=645 , d =0.1194496 ,
+             sig.level =0.05)
+        
+pwr.t.test( d = 0.1194496 , sig.level = 0.05, power = 0.8)
+```
+
+
+*** 
+
+## On Your Own
+
+>- Why would you use a t test?
+
+>- When would you choose a t test vs a mann whitney vs a wilcoxon test?
+
+>- Using the correct test, see if there is a difference in Cotinine levels by gender.
+
+>- What is the formula for a linear regression generally speaking in R? 
+
+>- What data object might we make with correlations to get a sense of groups that we are comparing? 
+

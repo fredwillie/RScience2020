@@ -230,6 +230,10 @@ You can directly download files to your project, or you can choose to go to a gi
 
 ***
 
+# Mentimeter Question
+
+***
+
 # R syntax
 
 
@@ -250,6 +254,18 @@ Commands are instructions to R to do something.
 mean(1:10)
 ```
 
+
+***
+
+## Comments
+
+</br>
+</br>
+</br>
+
+In an R Script, a "#" makes your code into a comment, or text that you a human being can read but that R skips over. 
+
+You should alsways add some human readable explanation of what you are doing. This will save you time later so that you do not have to try to figure out what you did. 
 
 ***
 
@@ -291,6 +307,12 @@ mean(OneToTen)
 
 ***
 
+# Mentimeter Question
+
+***
+
+
+
 ## Pulling in Data 
 
 </br>
@@ -318,7 +340,10 @@ Using R to analyze data stored in a separate raw file lets you keep your origina
 </br>
 
 ```{r echo = TRUE}
-nyc <- read.csv("NYC_HANES_DIAB.csv")
+install.packages("RCurl", repos = "http://cran.us.r-project.org")
+library(RCurl)
+url <- getURL("https://raw.githubusercontent.com/fredwillie/RScience2020/master/NYC_HANES_DIAB.csv")
+nyc <- read.csv(text = url)
 ```
 
 ***
@@ -355,6 +380,7 @@ One possible solution is:
 What this does is sets a website, in this case the location of the raw NYC HANES data on github, then tells "read.csv()" to use that URL as its dataframe location. 
 
 
+Go to Mentimeter and give a thumbs up when done.
 
 ***
 
@@ -489,6 +515,9 @@ head(nyc)
 
 ***
 
+# Mentimeter Question
+
+***
 
 ## Problem Solving
 
