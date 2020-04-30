@@ -1,0 +1,533 @@
+---
+title: 'R for Scientists: Functions'
+author: "Fred LaPolla"
+date: "4/9/2020"
+output: slidy_presentation
+---
+
+```{r setup, include=TRUE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+
+
+# Functions
+
+***
+
+## Review
+
+>- What data structure is most like a spreadsheet, with columns and rows containing different types of data?
+
+>- What differentiates a matrix from a dataframe?
+
+>- How can you look up what type of data structure you are working with?
+
+>- What type of data is most appropriate for storing different groups or categories?
+
+***
+
+## Pulling in last week's data
+
+```{r}
+library(RCurl)
+url <- getURL("https://raw.githubusercontent.com/fredwillie/RScience2020/master/NYC_HANES_DIAB.csv")
+nyc <- read.csv(text = url)
+nyc$AGEGROUP <- factor(nyc$AGEGROUP, levels = 1:3, labels = c("Youngest", "Middle", "Aged"))
+nyc$GENDER <- factor(nyc$GENDER, levels = 1:2, labels = c("male", "female"))
+# Rename the HSQ_1 factor for identification
+  nyc$HSQ_1 <- factor(nyc$HSQ_1, levels = 1:5, labels=c("Excellent","Very Good","Good", "Fair", "Poor"))
+  # Rename the DX_DBTS as a factor
+  nyc$DX_DBTS <- factor(nyc$DX_DBTS,levels = 1:3, labels=c("Diabetes with DX","Diabetes with no DX","No Diabetes"))
+  
+```
+
+***
+
+## Functions
+
+</br>
+</br>
+
+
+When we work with R, we will call functions to do things to our data, which can include transforming the way the data is set up to make it easier to work with, running analyses on our data or making visualizations. 
+
+Earlier we did a basic function:
+
+```{r}
+mean(1:10)
+```
+
+Or another:
+
+```{r}
+class(nyc)
+```
+
+
+
+***
+
+## Functions
+
+</br>
+</br>
+</br>
+
+
+Functions will take some data object and do something to it. They can take multiple **arguments.** Arguments are the part of a function that specify what needs to be done, and they can be simple or complex. 
+
+A function like mean can sometimes work with one argument, the vector that you are taking the mean of. To see what other arguments it takes, we can run:
+
+```{r}
+?mean
+```
+
+***
+
+## Functions and Arguments
+
+</br>
+</br>
+</br>
+
+We can see that mean takes three main arguments: x, "an R object" basically the numbers you want the mean of. x is the only manadatory argument. Trim, a fraction that trims from either end of the vector of numbers being averaged. na.rm removes any NAs. This is important because mean cannot run with NAs. 
+
+***
+
+
+## Arguments
+
+</br>
+</br>
+</br>
+
+How can you know when arguments are required or not? 
+
+Honestly this is mostly through trial and error and copying how others code their functions. 
+
+***
+
+## Functions
+
+</br>
+</br>
+</br>
+
+You can write your own functions and name them:
+
+```{r}
+doubleMeanFunc <- function(n){mean(n)*2}
+n <- 1:10
+mean(n)
+doubleMeanFunc(n)
+```
+
+The general format is function(x,y){**some command**}. You do not have to have multiple variables. 
+
+## Repeating functions
+
+</br>
+</br>
+</br>
+
+If we were to try to get the mean of each numeric variable we *could* do something like this:
+
+```{r results = 'hold'}
+mean(nyc[,6], na.rm = TRUE)
+mean(nyc[,7], na.rm = TRUE)
+mean(nyc[,8], na.rm = TRUE)
+```
+
+But it may be too time consuming and messy to write the code this way, analyze column by column, especially if we are having a large set of variables to go over.
+
+***
+
+## Apply
+
+You can run a function across a series of columns or rows. There is a whole family of these commands: apply() These functions allow to manipulate slices of data from matrices, arrays, lists and dataframes in a repetitive way.
+
+Apply() is a command to run a function over several rows or columns. Some R experts say that apply is faster than "for loops" in R, and that it works more efficiently with your data. You must provide the following arguments:
+
+1. The dataframe over which you want to run the function
+2. Whether you want to run the function by rows or columns.
+3. The function you want to run over those 
+
+***
+
+## apply(), The General Format:
+
+```{r eval=F}
+
+apply(X, MARGIN, FUN, ...)
+
+```
+
+X is an array or a matrix
+
+MARGIN is a variable defining the dimension along the function is applied
+
+FUN, which is the function that you want to apply to the data. (built-in or custom)
+
+***
+
+## Using apply to get means
+
+</br>
+</br>
+</br>
+
+```{r}
+apply(nyc[,6:9],2, mean, na.rm = TRUE)
+```
+
+***
+
+#### Thing to be aware of...
+
+Apply converts any data.frame into a matrix (and therefore all values to the same datatype) 
+Whenever the range includes any non-numeric columns, all the results are yielding NAs:
+
+```{r echo = TRUE}
+apply(nyc[,1:3], 2, class)
+apply(nyc[,9:11], 2, class)
+
+apply(nyc[,1:3], 2, mean, na.rm = TRUE)
+apply(nyc[,9:11], 2, mean, na.rm = TRUE)
+```
+
+## Apply
+
+Try applying a function across several columns or rows of your data:
+
+```{r}
+
+```
+
+*** 
+
+## Sapply
+
+sapply() is a relatively simple option that runs on columns meaning you don't need to specify the margin and returns a vector or matrix:
+
+```{r}
+sapply(nyc[,6:9], mean, na.rm = T)
+```
+
+There are many of these apply functions that you may enounter, mapply, vapply, lapply. Remember when you encounter that you can use the ?mapply command to look them up and stackoverflow to see differences. 
+
+***
+
+## If Statements and For Loops
+
+### For loops
+
+A common approach to the same problem of running a command over many rows of data in coding is to use **loops**. One way to implament loops in R is by using the `for` statement. 
+
+***
+
+
+
+## Syntax of `for` loop
+</br>
+</br>
+</br>
+
+
+
+```{r eval=FALSE}
+  for (val in sequence)
+  {
+  statement
+  }
+```
+
+Where, `sequence` is a vector of elements, not neccessarily sequential. `val` is the name of the variable that gets its current value from the n^th^ element in `sequence`. Note: the parentheses are not optional!
+
+
+In a typical `for` loop you tell R "for every instance of some element in a set, do something." Here we will tell R to multiply a variable by 3 for every number between 1 and 10.
+
+
+```{r echo = TRUE}
+for (i in 1:10)
+{
+  i <- i*3
+  print(i)
+}
+```
+
+***
+
+## For loops for getting means like above
+
+</br>
+</br>
+</br>
+
+
+Apply functions work similar to for loops. R people tend to say that For Loops are less efficient in R. 
+
+
+
+```{r}
+for( i in 6:9) {
+  value <- mean(nyc[,i], na.rm = TRUE)
+  print(c(colnames(nyc[i]), value))
+}
+```
+
+Note that R did not store these in any sort of table, each line is essentially overwriting the previous. 
+
+***
+
+## Using `for` with variables in your data
+
+We can use these for loops to iterate through each row of our data. Here we will limit to 100 rows to lessen the run-time. We will define a new variable, 'CHOLRAT' that holds the 'Relative CHOLESTEROL by HDL' index
+
+```{r echo = TRUE}
+for (i in 1:100) {
+    nyc[i, "CHOLRAT"] <- nyc[i, "CHOLESTEROLTOTAL"] / nyc[i, "HDL"]
+}
+hist(nyc$CHOLRAT)
+```
+
+We are telling R that for each row, divide the total cholesterol, by HDL, put that new information into a new column (at the end of our dataframe) then plot the resulting data.
+
+
+***
+
+##  When you should prefer `for` over `apply`?
+
+* If you want to have full control about how the calculation is being done (e.g. debug it)
+* Working on data with a complex nested structure
+* Loops are more robust for recycling errors!
+
+***
+
+## Vectorization
+
+Some of the examples we showed are far less efficient then possible since R is designed to run element by element vectorized calculations. 
+
+For example:
+```{r echo = TRUE}
+for(i in 1:10){
+  i <- i*3
+  print(i)
+}
+```
+
+The calculation itself is done simply by:
+```{r}
+i <- 1:10
+i*3
+```
+
+Where the scalar 3 is recycled into an equal sized vector as i
+
+In this case it is just the printing that gives a different output
+
+
+
+***
+
+## Tips 
+
+</br>
+</br>
+</br>
+
+
+1. Don’t use a loop when a vectorized alternative exists
+2. Don’t grow objects (via c, cbind, etc) during the loop - R has to create a new object and copy across the information just to add a new element or row/column
+3. Allocate an object to hold the results and fill it in during the loop
+
+***
+
+## Examples of variables initialization / memory allocation
+
+```{r}
+# vector() allows to initialize a vast renge of vectors, with different data types and structures
+vector(mode = "numeric", length = 99)
+
+# Matrix initialization 
+matrix(rep(0, 12), nrow = 4)
+
+
+```
+
+```{r}
+testvec <- vector("numeric", length = 3)
+ for( i in 6:8){
+    
+   
+           testvec[i-5] <- (sd(nyc[,i], na.rm = T))
+ }
+names(testvec)<-names(nyc[,6:8])
+testvec
+
+```
+
+
+*** 
+
+## Ifelse
+
+Ifelse can be useful for conditional variables, for example when dichotomizing a variable. 
+
+```{r}
+nyc <- na.omit(nyc)
+for(i in 1:1523){ifelse(nyc$CHOLESTEROLTOTAL[i] > 200, nyc$HiChol[i] <- 1, nyc$HiChol[i] <- 0)}
+```
+
+*** 
+
+## Tidy Data
+
+Often the data we have to work with needs to be organized in some way, for example we may only want a subset or be interested in certain values. While this can be done using indexing and if statements, R has packages that make it easier to do this.
+
+One is the Tidyverse, which is actually a collection of R packages. 
+
+***
+
+## Subsetting with Tidy Data
+
+A good option is called filter for getting a subset. Let's say we are only interested in the Youngest age group of our nyc data. We can try:
+
+```{r}
+
+library(tidyverse)
+youths <- filter(nyc, AGEGROUP == "Youngest")
+```
+
+***
+
+
+## Operators in R
+
+</br>
+</br>
+</br>
+R works with multiple operators in these equations:
+
+== means is equal to. One equal sign is used to assign values (like <-), and as an argument feature in some functions (size = 10).
+
+(ignore the quote mark below, it is for formatting only)
+
+'> greater than
+
+'>= great than or equal to
+
+'< less than
+
+'<= less than or equal to
+
+&& And
+
+|| Or
+
+!= Not equal to. 
+
+***
+
+The **by()** function: apply a function to a data frame split by factors
+
+The general format:  
+
+    ```by(data, INDICES, FUN)```
+
+INDICES is a factor or list of factors
+
+```{r}
+by(nyc$UACR, nyc$DX_DBTS, mean, na.rm = TRUE)
+```
+
+
+
+
+****
+
+## Use of filter and operators
+
+</br>
+</br>
+</br>
+
+You can combine these terms with the filter command to make subsets that meet certain criteria. Maybe you would only want gene expression levels above some threshold. In this case try filtering to only work with high cholesterol individuals, over 200. 
+
+```{r}
+
+```
+
+
+***
+
+## Select
+
+</br>
+</br>
+</br>
+
+Often we may want to combine commands. An example of this is to choose a single column of a dataframe to run some analysis on it. 
+
+In the Tidyverse, a nice feature is a command called a pipe:
+
+%>%
+
+The pipe takes whatever is to the left of it and runs it into the command to the right, which can cut down on the complexity of nested statements:
+
+```{r}
+YoungLead <- nyc %>% filter(AGEGROUP == "Youngest") %>%  select(LEAD) %>% unlist()
+mean(YoungLead, na.rm = TRUE)
+```
+
+***
+
+## Select
+
+In practical terms this could be convenient if we wanted to get two subsets to compare with a T Test or some other metric. 
+
+
+
+***
+
+## BioConductor
+
+Many bioinformatics tasks, incuding rna sequence analysis, will use packages from an organization called Bioconductor. 
+
+In my experience, install.packages() does not work well with bioconductor. Instead, google the bioconductor package:
+
+Find the package you are interested in and copy their instructions:
+
+```{r}
+if (!requireNamespace("BiocManager", quietly = TRUE))
+    install.packages("BiocManager")
+
+BiocManager::install("Biobase")
+```
+
+***
+
+## On Your Own Work
+
+>- Look up the argments for read.csv
+
+>- Use apply() to find the median value of CADMIUM, LEAD CHOLESTEROLTOTAL, GLUCOSESI, CREATININESI, and CREATININE
+
+>- Do the same using sapply()
+
+>- Use a for loop to find the median value of rows 16:19
+
+
+>- Make a for loop to find the standard deviation (hint sd() ) of CHOLESTEROLTOTAL, GLUCOSESI, CREATININESI, AND CREATININE
+
+>- Bonus/Challenge Create a vector in which to put the standard deviations as 
+
+>- Use ifelse to create a new variable of high and normal A1C dichotomizing with 7 as a threshold for high levels
+
+>- Subset to only have females (gender == "Female")
+
+>- Create a subset of males and find the median total cholesterol level
+
+>- Try to create a summary of the mean A1C using two factors, GENDER and DX_DBTS
+
+
