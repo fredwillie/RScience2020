@@ -1,0 +1,721 @@
+---
+title: 'R for Scientific Researchers IV: Data Visualization'
+author: "Fred LaPolla"
+date: "4/14/2020"
+output: slidy_presentation
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+# Data Visualization
+
+***
+
+## Objectives
+
+</br>
+</br>
+</br>
+
+Students will be able to:
+
+>- Explore their data to visually assess skew
+>- Create a heatmap to visually assess gene expression levels
+>- Use Ggplot2 to build different types of charts by employing layers 
+>- Create charts and figures for publication including customzing colors and shapes, as well as exporting figures from R.
+
+***
+
+## Getting started
+
+Let's pull in our same NYC HANES data set. 
+
+```{r, echo = TRUE}
+library(RCurl)
+url <-getURL("https://raw.githubusercontent.com/fredwillie/RScience2020/master/NYC_HANES_DIAB.csv")
+nyc <- read.csv(text = url)
+nyc <- na.omit(nyc)
+nyc$AGEGROUP <- factor(nyc$AGEGROUP, levels = 1:3, labels = c("Youngest", "Middle", "Aged"))
+nyc$GENDER <- factor(nyc$GENDER, levels = 1:2, labels = c("male", "female"))
+# Rename the HSQ_1 factor for identification
+  nyc$HSQ_1 <- factor(nyc$HSQ_1, levels = 1:5, labels=c("Excellent","Very Good","Good", "Fair", "Poor"))
+  # Rename the DX_DBTS as a factor
+  nyc$DX_DBTS <- factor(nyc$DX_DBTS,levels = 1:3, labels=c("Diabetes with DX","Diabetes with no DX","No Diabetes"))
+  
+```
+
+There are two major reasons we might want to visualize our data: exploration and communication. 
+
+***
+
+## Data Exploration
+
+</br>
+</br>
+</br>
+
+In the first class, what were some of the ways we discussed to get a sense of our data? Why do we do this?
+
+>- Summary
+>- paste.ecs::stat.desc
+>- psych::describe
+>- Others
+
+
+
+In addition to getting an understanding of our data, these tools help us understand what sort of tests are possible on our data type.
+
+
+
+***
+
+## Data Exploration
+
+</br>
+</br>
+</br>
+
+One of the first things we may want to know is "Is my data normally distributed"? Why might we want to know this?
+
+>- Different statistical tests for hypothesis testing assume a Gaussian or Normal Distribution
+
+>- A quick way to get a sense of the nature of our distribution is to look at a picture, and a common option is a **Histogram**
+
+***
+
+## Data Exploration
+
+
+The command hist() let's us make a histogram:
+
+```{r, echo = TRUE}
+#For today don't worry about par, this is to plot three charts side by side
+threechart <-par(mfrow = c(1,3))
+#this is the meat of the matter
+hist(nyc$GLUCOSE)
+
+hist(nyc$CHOLESTEROLTOTAL)
+
+hist(nyc$LEAD)
+par(mfrow = c(1,1))
+```
+
+***
+
+## Hist colors
+
+
+You could also give it a fill if you want:
+
+```{r, echo = TRUE}
+hist(nyc$CHOLESTEROLTOTAL, col = "steelblue")
+```
+
+
+***
+
+## Boxplot
+
+
+
+We can also use boxplots, sometimes also called Box and Whisker or Tukey plots. 
+
+```{r, echo = TRUE}
+boxplot(nyc$CHOLESTEROLTOTAL)
+```
+
+Boxplots display: the median, quartiles and outliers (which are by default 1.5 x the interquartile range above or below the quartiles). You can tell if there is relatively a lot of skew or not because the median will be near the mean. 
+
+*** 
+
+## Boxplots
+
+
+
+You can also use boxplots to look at comparisons of groups. 
+
+```{r, echo = TRUE}
+boxplot(nyc$CHOLESTEROLTOTAL ~ nyc$GENDER)
+```
+
+***
+
+## Boxplots
+
+You can also add in a notch, which if the notch overlaps is a good rule of thumb that they are not statistically significantly different (but beware of statistical significance).
+
+```{r, echo = TRUE}
+boxplot(nyc$CHOLESTEROLTOTAL ~ nyc$GENDER, notch = TRUE)
+```
+
+***
+
+## Boxplots
+
+With a color
+
+```{r, echo = TRUE}
+boxplot(nyc$CHOLESTEROLTOTAL ~ nyc$GENDER, notch = TRUE, col = "pink")
+```
+
+*** 
+
+
+
+## QQ Plots
+
+
+Another option for looking at skew is the Quantile-Quantile Plot, or QQ Plot. This chart plots quantiles, similar to percentiles of our data against a normally distributed quantile. Baiscally, the more our data lies on a straight line, the more normal it is. Compare:
+
+```{r, echo=TRUE}
+#QQNorm plots how the quantiles of our sample compare to a theoretical normal distribution
+par(mfrow=c(1,2))
+##QQPlot for total cholesterol
+qqnorm(nyc$CHOLESTEROLTOTAL, main = "Normal Q-Q Plot Total Cholesterol")
+#QQLine adds a straight line for reference
+qqline(nyc$CHOLESTEROLTOTAL)
+
+##QQPlot for Cadmium
+qqnorm(nyc$CADMIUM,main= "Normal Q-Q Plot Cadmium")
+qqline(nyc$CADMIUM)
+```
+
+
+
+
+
+
+
+
+***
+
+## Correlations & Scatter Plots
+
+</br>
+</br>
+</br>
+
+Sometimes we may be running a correlation test. While running Pearson's or a Mann-Whitney Correlation test can give you results, it can also be nice to look at an image of that correlation to see how nicely (or not) the points seem to correlate:
+
+```{r, echo = TRUE}
+plot(nyc$A1C, nyc$GLUCOSE)
+wilcox.test(nyc$A1C, nyc$GLUCOSE, paired = TRUE, alternative = "two.sided")
+```
+
+
+## Correlation & Scatter Plots
+
+</br>
+</br>
+</br>
+
+Sometimes, for example in cases where our scale has exponentially larger outliers, it can be helpful to try to normalize our data so that the chart is more viewable. You could try a transformation like "log()". It is helpful to do the log +1 in this case because log(0) is negative infinity
+
+```{r, echo = TRUE}
+par(mfrow = c(1,2))
+plot(nyc$GLUCOSE, nyc$CHOLESTEROLTOTAL)
+plot(log(nyc$GLUCOSE+1), log(nyc$CHOLESTEROLTOTAL+1))
+```
+
+***
+
+
+## Heatmaps
+
+In looking at gene expression data you may want to see a heatmap to see which timepoints/genes are being expressed. A heatmap is a quick way to look at large volumes of data by highlighting cells that have higher or lower values in them. 
+
+```{r, echo = TRUE}
+library(RCurl)
+url <- getURL("https://raw.githubusercontent.com/fredwillie/RScience2020/master/counts.normalized.csv")
+dolgalevNormRNA <- read.csv(text = url)
+
+```
+
+
+***
+
+## Checking our data
+
+This data provided by Dr. Dolgalev is a table of RNA-seq normalized counts. These are expression values of all genes across different samples. There are wild-type and Tet2-knockout samples (4 of each).
+ 
+For more details on how the table was generated, the steps are summarized here:
+http://bit.ly/snsdemo
+
+```{r, echo = TRUE}
+head(dolgalevNormRNA)
+class(dolgalevNormRNA)
+
+```
+
+We can see column 1 is the gene name, column 2, 3 and 8 and 9 are the Wild Type samples, and columns 4:7 are the knock out samples. 
+
+***
+
+## Reordering to group by type
+
+```{r}
+dolgalevNormRNA<- dolgalevNormRNA[c(1:3,8:9, 4:7)]
+head(dolgalevNormRNA)
+dolgaMat <- as.matrix(dolgalevNormRNA[,2:9], "numeric")
+rownames(dolgaMat)<- dolgalevNormRNA[,1]
+head(dolgaMat)
+class(dolgaMat)
+class(dolgaMat[,1])
+summary(dolgaMat)
+```
+
+
+***
+## Creating a heatmap of KnockOut vs Wild Type
+
+```{r}
+knockOut <- dolgaMat[,5:8]
+wildType <- dolgaMat[,1:4]
+
+exp_genesAll <- names(which(rowSums(dolgaMat)>15000))
+
+exp_genesKO = names(which(rowSums(knockOut)>15000))
+ 
+exp_genesWT = names(which(rowSums(wildType)>15000))
+
+dolgaExp <- dolgaMat[exp_genesAll,]
+expressedKO <- knockOut[exp_genesKO,]
+expressedWT <- wildType[exp_genesWT,]
+```
+
+
+```{r}
+library(ComplexHeatmap)
+Heatmap(dolgaExp)
+Heatmap(expressedKO)
+Heatmap(expressedWT)
+```
+
+```{r}
+Heatmap(dolgaExp, cluster_columns = FALSE, clustering_method_rows = "complete", show_row_names = FALSE)
+Heatmap(expressedKO, cluster_columns = FALSE, clustering_method_rows = "complete", show_row_names = FALSE)
+Heatmap(expressedWT, cluster_columns = FALSE, clustering_method_rows = "complete", show_row_names = FALSE)
+```
+
+***
+
+## Clustering a pairwise correlation of expressions:
+
+We might look at a heatmap of the highly expressed genes
+
+```{r}
+
+Heatmap(cor(t(dolgaExp)), show_column_names = FALSE, show_row_names = FALSE)
+```
+
+Then we can take this figure, and using a command called hclust, we can pass a method we want the clustering to be done. dist means it is creating a "distance matrix" of the correlations of gene expression, which is a way of saying if we were to chart the values, how far would each be from one another. You can explor ways you can cluster by viewing ?dist. Then this 
+
+```{r}
+##The following is borrowed from Dr. Itai Yannai
+
+##A correlation of the highly expressed genes in our set
+C = cor(t(dolgaExp))
+#then it becomes a heatmap
+h <- Heatmap(C)
+print(h)
+
+## We cluster the values in this set of gene expression using euclidian distance
+## Basically on the backend, R is making a matrix of the values in C and then calculating
+##How far they are from one another
+h <- hclust(d=dist(C))
+
+## Then we are choosing where to cut the dendrogram, here 6 "branches" or groups have
+## been cut, you could also choose to cut the dendrogram by height using h instead of K
+hc <- as.factor(cutree(h, k=6))
+## Now we make a heatmap again using the order of the clustering
+hh = ComplexHeatmap::Heatmap(C[h$order, h$order],cluster_rows=FALSE, cluster_columns=FALSE)
+## Finally we add annotations to show the groups that we have made
+an = HeatmapAnnotation(df = data.frame(hc[h$order]), which = 'row')
+print(hh+an)
+
+```
+
+
+*** 
+
+
+
+
+
+
+## Heatmaps
+
+We can see that our data is highly skewed so we may want to perform this on a log scale:
+
+```{r}
+Heatmap(log10(1+dolgaExp))
+```
+
+*** 
+
+## Finding Only Highly Correlated Expressions
+
+Maybe we might want to see something like only cases of genes that are highly correlated between groups:
+
+
+```{r}
+
+
+
+dolgNew <- vector("numeric", )
+corLoop<- for(i in 1:506){
+  correlation<-ifelse( cor( dolgaExp[i,1:4], dolgaExp[i,5:8]) > .70,
+                             cor(dolgaExp[i,1:4],dolgaExp[i,5:8]),
+                                                                     9999)
+                       dolgNew[i]<- correlation
+}
+```
+
+What are we doing here: first creating that empty vector of the length of the normalized counts. Next we are setting up a for loop to run over this length. Then we are setting up an if else to give us one of two values: if the correlation of the the two mousetypes gene expressions are over .7 then save that value, otherwise assign a 9999. We now have three types of values: NAs, correlations for "highly correlated" values or 9999s.
+
+***
+
+## Limiting our matrix to get rid of those low correlations
+
+Now let's make a matrix of getting rid of those with a low correlation. We are saying create a matrix. That matrix should pull from the dolgaMat matrix, but only rows that are not (!=) 9999, which was our non-correlated value above. Let's also get rid of the NAs
+
+```{r}
+correlatedMatrix <- dolgaExp[which(dolgNew != 9999),]
+correlatedMatrix <- na.omit(correlatedMatrix)
+```
+
+
+***
+## Viewing a heatmap of the correlated genes
+
+Maybe we want to leave the order as is:
+
+```{r}
+library(ComplexHeatmap)
+Heatmap(correlatedMatrix, cluster_rows = FALSE, cluster_columns = FALSE)
+```
+
+
+But we can also use several methods of hierarchical clustering in our chart. To learn more about these try: ?hclust  
+
+```{r}
+Heatmap(correlatedMatrix, clustering_method_rows = "complete", cluster_columns = FALSE )
+```
+
+
+
+***
+
+
+
+```{r}
+install.packages("RColorBrewer", repos = "http://cran.us.r-project.org")
+library(RColorBrewer)
+Heatmap(C, col = brewer.pal(7,"BuGn"))
+```
+
+***
+
+## Unsupervised Clustering
+
+You can also use a command kmeans() for unsupervised clustering:
+
+```{r}
+kRes <- kmeans(t(C),  10)
+hist(kRes$cluster)
+```
+
+
+***
+
+## Visualization for Communication
+
+
+
+### GGPlot2
+
+
+While base plots like those above are fine for data exploration, often we will also need to create figures for a publication. 
+
+A good option is a package called GGPlot2, which stands for Grammar of Graphics (you will never need to know that)
+
+It is part of the tidyverse, so you should actually have it but just in case:
+
+```{r, echo = TRUE}
+install.packages("ggplot2", repos = "http://cran.us.r-project.org")
+library(ggplot2)
+```
+
+*** 
+
+## GGPlot2
+
+</br>
+</br>
+</br>
+
+GGPlot is very common, so you should learn it, but it is also kind of weird relative to a lot of ways you might normally think about charts. GGPlot works by assigning values to aesthetic components of a chart (think x, y coordinates, colors, shapes etc), and then adds layers of shapes and labels to actually visualize these things. 
+
+This typically requires working in multiple steps. 
+
+## GGPlot2 Step1
+
+first we name the dataset and assign our basic X Y coordinates. Not all charts will have both. Let's start with a basic scatterplot 
+
+```{r, echo = TRUE}
+pic <- ggplot(nyc, aes(x = SPAGE, y = CHOLESTEROLTOTAL))
+pic
+```
+
+When we run this, nothing happens, or seems to happen. 
+
+****
+
+## GGPlot2 Step 2
+
+</br>
+</br>
+</br>
+
+We next need to add a layer that tells R what sort of shape to map those aesthetic attributes onto:
+
+```{r, echo = TRUE}
+pic + geom_point()
+```
+
+
+***
+
+## A different Geom
+
+We could try a different "geom" but most do not actually make a lot of sense for this combination of variables:
+
+```{r, echo = TRUE}
+pic + geom_smooth()
+```
+
+
+There is **no need* to memorize these "geoms." Instead go to the Help up on the top menu and open the Cheatsheets. There are many cheatsheets, and they add when you install packages. This is a quick reference guide. 
+
+***
+
+## GGPlot 2 Making Histograms and Boxplots
+
+So now if we want to make charts like those above we can:
+
+Histograms
+
+```{r, echo = TRUE}
+ggplot(nyc, aes(x = CHOLESTEROLTOTAL, y = ..count..)) +geom_bar()
+```
+
+***
+
+## Histogram Bins
+
+
+We can also set the binwidth
+
+```{r, echo = TRUE}
+ggplot(nyc, aes(x = CHOLESTEROLTOTAL, y = ..count..)) +geom_bar(binwidth = 20)
+```
+
+```{r}
+ggplot(nyc, aes(x = CHOLESTEROLTOTAL, y = ..count..)) +geom_bar(binwidth = 20)
+
+
+```
+
+
+Or
+
+```{r, echo = TRUE}
+ggplot(nyc, aes(x = as.factor(GENDER), y =CHOLESTEROLTOTAL ))+geom_boxplot()
+```
+
+***
+
+## Error Bars
+
+In R Error bars are also added als a layer. In this code we are first making a matrix of mean cholesterol levels by gender
+
+
+```{r}
+## Getting mean cholesterol and setting it as a matrix
+genderChol <- as.matrix(by(nyc$CHOLESTEROLTOTAL, nyc$GENDER, mean))
+## we actually want a data frame and are setting it here. The output of "by" cannot directly become a dataframe.
+genderChol <- as.data.frame(genderChol)
+## Naming the column of Mean Cholesterol
+names(genderChol)<- "MeanCholesterol"
+## creating a vector of gender labels
+sex <- c("male","female")
+## Combining the two, previously m and f were row names, not actual data
+genderChol <- cbind(genderChol, sex)
+## Getting the standard deviation of cholesterol by gender and adding it to our dataframe
+standdev <- as.vector(by(nyc$CHOLESTEROLTOTAL,nyc$GENDER, sd))
+genderChol <- cbind(genderChol, standdev)
+##Greating a standard error vector
+se <- vector("numeric", 2)
+se[1] <- (genderChol$standdev[1])/sqrt(length(which(nyc$GENDER=="male")))
+se[2]<- (genderChol$standdev[2])/sqrt(length(which(nyc$GENDER=="female")))
+genderChol <- cbind(genderChol, se) 
+## creating an upper and lower conf. interval
+genderChol[,5]<- genderChol$MeanCholesterol+genderChol$se
+genderChol[,6]<- genderChol$MeanCholesterol-genderChol$se
+
+
+ggplot(genderChol, aes(x = sex, y = MeanCholesterol) )+geom_bar(stat="identity", fill = "steelblue") + geom_errorbar(y = genderChol$MeanCholesterol,
+          ymin = genderChol$V6, 
+          ymax = genderChol$V5, 
+          stat= "identity", inherit.aes = TRUE, color = "orange", 
+          alpha = .9, size = 1, linetype = 1, width = .2)
+```
+
+***
+
+## GGPlot for formatting
+
+</br>
+</br>
+</br>
+
+So far we have just found a relatively complex way to make the same plots that hist() and boxplot() made. 
+
+One of the first things we might try is formatting by color. Color could serve two purposes: meaning can be encoded in color or for design. By encoding meaning, I mean that the color tells us information, for example in the heatmap. 
+
+```{r, echo = TRUE}
+ggplot(nyc, aes(x = SPAGE, y = CHOLESTEROLTOTAL, col = as.factor(GENDER)))+geom_point()
+```
+
+***
+
+## Color continued
+
+</br>
+</br>
+</br>
+
+A quirk of ggplot is that colors of points are encoded col, but if you want bars to be filled, you must use fill:
+
+```{r, echo = TRUE}
+ggplot(nyc, aes(x = CHOLESTEROLTOTAL, y = ..count.., fill = GENDER)) +geom_bar(binwidth = 10)
+
+```
+
+*** 
+
+## Color Palettes
+
+</br>
+</br>
+</br>
+
+You can also use color blind friendly palettes, like those offered by the package colorbrewer2
+
+```{r, echo = TRUE}
+install.packages("RColorBrewer", repos = "http://cran.us.r-project.org")
+library(RColorBrewer)
+display.brewer.all(colorblindFriendly = TRUE)
+```
+
+Then:
+
+```{r, echo = TRUE}
+
+ggplot(nyc, aes(x = CHOLESTEROLTOTAL, y = SPAGE, col = DX_DBTS))+geom_point() + scale_color_brewer(palette = "Dark2")
+```
+
+***
+
+## Scales
+
+</br>
+</br>
+</br>
+
+We may also want to change up the scales. The plot we just made aonly had tick marks every 100, but that is too large a scale for cholesterol. the seq() command takes in a starting value, a finishing value and a number to count by. 
+
+```{r, echo = TRUE}
+
+ggplot(nyc, aes(x = CHOLESTEROLTOTAL, y = SPAGE, col = DX_DBTS))+geom_point() + scale_color_brewer(palette = "Dark2") + scale_x_continuous(breaks = seq(0, 400, 25))
+```
+
+
+We could do the same for the y scale:
+
+```{r, echo = TRUE}
+ggplot(nyc, aes(x = CHOLESTEROLTOTAL, y = SPAGE, col = DX_DBTS))+geom_point() + scale_color_brewer(palette = "Dark2") + scale_x_continuous(breaks = seq(0, 400, 25))+scale_y_continuous(breaks = seq(0, 100, 5))
+```
+
+***
+
+## Labels
+
+</br>
+</br>
+</br>
+
+We can also relabel the labels to make it more presentable for a paper, poster or talk. Perhaps you are noticing a trend that at first seems strange in ggplot but makes life easier: we keep making changes by adding arguments on to the end. This means once you get your baseline plot drawn you can then experiment on customizing for publication. 
+
+```{r, echo = TRUE}
+ggplot(nyc, aes(x = CHOLESTEROLTOTAL, y = SPAGE, col = DX_DBTS))+geom_point() + scale_color_brewer(palette = "Dark2") + scale_x_continuous(breaks = seq(0, 400, 25))+scale_y_continuous(breaks = seq(0, 100, 5)) + xlab("Total Cholesterol Level mg/dL") + ylab("Age in years")
+
+```
+
+***
+
+## Themes
+
+</br>
+</br>
+</br>
+
+We can also customize the overall "look" of the chart with a theme. As you start adding "theme_" R will suggest options, try them out to see which you like. The second theme argument removes a redundant label on the legend. 
+
+
+
+```{r, echo = TRUE}
+ggplot(nyc, aes(x = CHOLESTEROLTOTAL, y = SPAGE, col = DX_DBTS))+geom_point() + scale_color_brewer(palette = "Dark2") + scale_x_continuous(breaks = seq(0, 400, 25))+scale_y_continuous(breaks = seq(0, 100, 5)) + xlab("Total Cholesterol Level mg/dL") + ylab("Age in years") + theme_minimal() + theme(legend.title = element_blank()) 
+
+```
+
+***
+
+## Things to consider when choosing colors and themes
+
+</br>
+</br>
+</br>
+
+>- Accessibility (color blind friendly palettes can help).
+>- Where will this be seen? Large rooms like conference plenaries, might benefit from a dark background with light points, bright rooms with slide projectors will benefit from light backgrounds and dark points. 
+>- Posters assume that readers have limited time and need a simple message.
+>- In journal papers provide enough information that a user can understand without flipping to additional information. 
+>- Avoid gimmicks like 3D designs. 
+
+***
+
+## On Your Own
+
+>- Make a histogram on your own on one column from the nyc data frame. Is it skewed? Which way? Try confirming with pastecs::stat.desc (hint set norm = TRUE as an argument).
+
+>- Try making a QQPlot to assess the normality of one variable of your choosing. Is the distribution normal? How can you tell?
+
+>- Pull in a gene expressiion table, feel free to use "https://raw.githubusercontent.com/fredwillie/RScience2020/master/counts.normalized.csv", and make a heatmap.
+
+>- Change the default coloration
+
+>- Using what we have learned, make subsets of the Wildtype and Knock Out Mice in Dr. Dolgalev's data. Create heatmaps of this data. 
+
+
+>- Make a boxplot of A1C by diabetes diagnosis. Would you assume the three groups have the same A1C level? 
+
+>- Use ggplot2 to make a scatter plot of A1C by glucose levels.
+
+>- Add coloration by gender for the above plot and change the background theme to the minimal option. Change the X axis to label numbers by increments of 3.  
+
+
+
+
