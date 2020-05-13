@@ -440,7 +440,7 @@ list-style-type: none;
   <p class="author">
 Fred LaPolla
   </p>
-  <p class="date">4/7/2020</p>
+  <p class="date">5/13/2020</p>
 </div>
 <div id="review" class="slide section level2">
 <h1>Review</h1>
@@ -472,10 +472,11 @@ Fred LaPolla
 <div class="sourceCode" id="cb1"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb1-1" data-line-number="1"><span class="kw">install.packages</span>(<span class="st">&quot;RCurl&quot;</span>, <span class="dt">repos =</span> <span class="st">&quot;http://cran.us.r-project.org&quot;</span>)</a></code></pre></div>
 <pre><code>## 
 ## The downloaded binary packages are in
-##  /var/folders/wh/kxxcb38x3970_qdg14gscpd1k2bqnj/T//RtmpqGloAH/downloaded_packages</code></pre>
-<div class="sourceCode" id="cb3"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb3-1" data-line-number="1"><span class="kw">library</span>(RCurl)</a>
-<a class="sourceLine" id="cb3-2" data-line-number="2">url &lt;-<span class="st"> </span><span class="kw">getURL</span>(<span class="st">&quot;https://raw.githubusercontent.com/fredwillie/RScience2020/master/NYC_HANES_DIAB.csv&quot;</span>)</a>
-<a class="sourceLine" id="cb3-3" data-line-number="3">nyc &lt;-<span class="st"> </span><span class="kw">read.csv</span>(<span class="dt">text =</span> url)</a></code></pre></div>
+##  /var/folders/wh/kxxcb38x3970_qdg14gscpd1k2bqnj/T//Rtmpf0T2vu/downloaded_packages</code></pre>
+<div class="sourceCode" id="cb3"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb3-1" data-line-number="1"><span class="kw">library</span>(RCurl)</a></code></pre></div>
+<pre><code>## Warning: package 'RCurl' was built under R version 3.6.2</code></pre>
+<div class="sourceCode" id="cb5"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb5-1" data-line-number="1">url &lt;-<span class="st"> </span><span class="kw">getURL</span>(<span class="st">&quot;https://raw.githubusercontent.com/fredwillie/RScience2020/master/NYC_HANES_DIAB.csv&quot;</span>)</a>
+<a class="sourceLine" id="cb5-2" data-line-number="2">nyc &lt;-<span class="st"> </span><span class="kw">read.csv</span>(<span class="dt">text =</span> url)</a></code></pre></div>
 </div>
 <div id="data-types-in-r" class="slide section level2">
 <h1>Data Types in R</h1>
@@ -516,12 +517,12 @@ Fred LaPolla
 <h1>Factor Levels and Labels</h1>
 <p></br> </br> </br></p>
 <p>When you work with factor variables, the different choices are called “levels.” You can rename levels using a levels() command, but it is important that the order of the levels match the existing order.</p>
-<div class="sourceCode" id="cb4"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb4-1" data-line-number="1">nyc<span class="op">$</span>GENDER &lt;-<span class="st"> </span><span class="kw">factor</span>(nyc<span class="op">$</span>GENDER, <span class="dt">levels =</span> <span class="dv">1</span><span class="op">:</span><span class="dv">2</span>)</a>
-<a class="sourceLine" id="cb4-2" data-line-number="2"><span class="kw">summary</span>(nyc<span class="op">$</span>GENDER)</a></code></pre></div>
+<div class="sourceCode" id="cb6"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb6-1" data-line-number="1">nyc<span class="op">$</span>GENDER &lt;-<span class="st"> </span><span class="kw">factor</span>(nyc<span class="op">$</span>GENDER, <span class="dt">levels =</span> <span class="dv">1</span><span class="op">:</span><span class="dv">2</span>)</a>
+<a class="sourceLine" id="cb6-2" data-line-number="2"><span class="kw">summary</span>(nyc<span class="op">$</span>GENDER)</a></code></pre></div>
 <pre><code>##   1   2 
 ## 642 885</code></pre>
-<div class="sourceCode" id="cb6"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb6-1" data-line-number="1"><span class="kw">levels</span>(nyc<span class="op">$</span>GENDER) &lt;-<span class="st"> </span><span class="kw">c</span>(<span class="st">&quot;Male&quot;</span>, <span class="st">&quot;Female&quot;</span>)</a>
-<a class="sourceLine" id="cb6-2" data-line-number="2"><span class="kw">summary</span>(nyc<span class="op">$</span>GENDER)</a></code></pre></div>
+<div class="sourceCode" id="cb8"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb8-1" data-line-number="1"><span class="kw">levels</span>(nyc<span class="op">$</span>GENDER) &lt;-<span class="st"> </span><span class="kw">c</span>(<span class="st">&quot;Male&quot;</span>, <span class="st">&quot;Female&quot;</span>)</a>
+<a class="sourceLine" id="cb8-2" data-line-number="2"><span class="kw">summary</span>(nyc<span class="op">$</span>GENDER)</a></code></pre></div>
 <pre><code>##   Male Female 
 ##    642    885</code></pre>
 </div>
@@ -529,8 +530,8 @@ Fred LaPolla
 <h1>Alternate approach with Labels</h1>
 <p>You can also do this with labels for the levels.</p>
 <p>An “in the weeds” explanation: Levels and labels are not the same as in SPSS, what this is doing is looking at the AGEGROUP column, saying that the groups (or levels) for this group are the integers 1,2,3, and then assigning as a name the Youth, Middle and Aged labels.</p>
-<div class="sourceCode" id="cb8"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb8-1" data-line-number="1">nyc<span class="op">$</span>AGEGROUP &lt;-<span class="st"> </span><span class="kw">factor</span>(nyc<span class="op">$</span>AGEGROUP, <span class="dt">levels =</span> <span class="dv">1</span><span class="op">:</span><span class="dv">3</span>, <span class="dt">labels =</span> <span class="kw">c</span>(<span class="st">&quot;Youth&quot;</span>, <span class="st">&quot;Middle&quot;</span>, <span class="st">&quot;Aged&quot;</span>))</a>
-<a class="sourceLine" id="cb8-2" data-line-number="2"><span class="kw">summary</span>(nyc<span class="op">$</span>AGEGROUP)</a></code></pre></div>
+<div class="sourceCode" id="cb10"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb10-1" data-line-number="1">nyc<span class="op">$</span>AGEGROUP &lt;-<span class="st"> </span><span class="kw">factor</span>(nyc<span class="op">$</span>AGEGROUP, <span class="dt">levels =</span> <span class="dv">1</span><span class="op">:</span><span class="dv">3</span>, <span class="dt">labels =</span> <span class="kw">c</span>(<span class="st">&quot;Youth&quot;</span>, <span class="st">&quot;Middle&quot;</span>, <span class="st">&quot;Aged&quot;</span>))</a>
+<a class="sourceLine" id="cb10-2" data-line-number="2"><span class="kw">summary</span>(nyc<span class="op">$</span>AGEGROUP)</a></code></pre></div>
 <pre><code>##  Youth Middle   Aged 
 ##    697    516    314</code></pre>
 <p><strong>Note:</strong> Similar to the examples above, sometimes R reads in character strings as factors. If your cell/gene IDs are listing with “levels” you may have to change the type of data.</p>
@@ -541,7 +542,7 @@ Fred LaPolla
 <p>R understands TRUE and FALSE as concepts.</p>
 <p>TRUE is equivalent to 1 and FALSE to 0.</p>
 <p>This means you can find sums of arguments that meet criteria to see how many are true, or you can use means to find proportions. An example of finding the proportion can be seen:</p>
-<div class="sourceCode" id="cb10"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb10-1" data-line-number="1"><span class="kw">mean</span>(nyc<span class="op">$</span>SPAGE <span class="op">&lt;</span><span class="st"> </span><span class="dv">50</span>)</a></code></pre></div>
+<div class="sourceCode" id="cb12"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb12-1" data-line-number="1"><span class="kw">mean</span>(nyc<span class="op">$</span>SPAGE <span class="op">&lt;</span><span class="st"> </span><span class="dv">50</span>)</a></code></pre></div>
 <pre><code>## [1] 0.62148</code></pre>
 <p>To find the proportion of people under 50. This is because “nyc$SPAGE&lt;50” runs through every value in the column and assigns TRUE, i.e. 1, if they are younger than 50, and FALSE, 0, if over 50. So mean is the same as summing all those ones and dividing by the total, which is the same as finding a proportion.</p>
 </div>
@@ -549,7 +550,7 @@ Fred LaPolla
 <h1>Determining the data type</h1>
 <p></br> </br> </br></p>
 <p>If you run class() on a column of data, you will get the data type of that column:</p>
-<div class="sourceCode" id="cb12"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb12-1" data-line-number="1"><span class="kw">class</span>(nyc<span class="op">$</span>AGEGROUP)</a></code></pre></div>
+<div class="sourceCode" id="cb14"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb14-1" data-line-number="1"><span class="kw">class</span>(nyc<span class="op">$</span>AGEGROUP)</a></code></pre></div>
 <pre><code>## [1] &quot;factor&quot;</code></pre>
 <p>Try on your own and find the class of three columns of data. What are they?</p>
 </div>
@@ -592,29 +593,29 @@ Fred LaPolla
 <p></br> </br> </br></p>
 <p>A vector is like a list but with everything of one type of data: i.e. all numbers, all factors, etc.</p>
 <p>If you perform some operation on vectors, the vector will be processed one after the next. If you perform an operation on two vectors, for example multiplying them, the operations will go down the list of each vector:</p>
-<div class="sourceCode" id="cb14"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb14-1" data-line-number="1">x &lt;-<span class="st"> </span><span class="kw">c</span>(<span class="dv">1</span>,<span class="dv">2</span>,<span class="dv">3</span>,<span class="dv">4</span>)</a>
-<a class="sourceLine" id="cb14-2" data-line-number="2">y &lt;-<span class="st"> </span><span class="kw">c</span>(<span class="dv">2</span>,<span class="dv">3</span>)</a>
-<a class="sourceLine" id="cb14-3" data-line-number="3">x<span class="op">*</span>y</a></code></pre></div>
+<div class="sourceCode" id="cb16"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb16-1" data-line-number="1">x &lt;-<span class="st"> </span><span class="kw">c</span>(<span class="dv">1</span>,<span class="dv">2</span>,<span class="dv">3</span>,<span class="dv">4</span>)</a>
+<a class="sourceLine" id="cb16-2" data-line-number="2">y &lt;-<span class="st"> </span><span class="kw">c</span>(<span class="dv">2</span>,<span class="dv">3</span>)</a>
+<a class="sourceLine" id="cb16-3" data-line-number="3">x<span class="op">*</span>y</a></code></pre></div>
 <pre><code>## [1]  2  6  6 12</code></pre>
 </div>
 <div id="binding-vectors" class="slide section level2">
 <h1>Binding Vectors</h1>
 <p></br> </br> </br></p>
 <p>You can combine vectors to be a matrix with rbind() for combining rows and cbind() for columns. If the columns or rows are evenly divisible, they will recycle, but if for example you tried to r bind a vector with 4 objects and a vector with 5 objects, you will get an error.</p>
-<div class="sourceCode" id="cb16"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb16-1" data-line-number="1"><span class="kw">rbind</span>(x, y)</a></code></pre></div>
+<div class="sourceCode" id="cb18"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb18-1" data-line-number="1"><span class="kw">rbind</span>(x, y)</a></code></pre></div>
 <pre><code>##   [,1] [,2] [,3] [,4]
 ## x    1    2    3    4
 ## y    2    3    2    3</code></pre>
-<div class="sourceCode" id="cb18"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb18-1" data-line-number="1">z &lt;-<span class="st"> </span><span class="kw">c</span>(<span class="dv">5</span>,<span class="dv">8</span>,<span class="dv">0</span>,<span class="dv">9</span>,<span class="dv">10</span>)</a>
-<a class="sourceLine" id="cb18-2" data-line-number="2"><span class="kw">rbind</span>(x,z)</a></code></pre></div>
+<div class="sourceCode" id="cb20"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb20-1" data-line-number="1">z &lt;-<span class="st"> </span><span class="kw">c</span>(<span class="dv">5</span>,<span class="dv">8</span>,<span class="dv">0</span>,<span class="dv">9</span>,<span class="dv">10</span>)</a>
+<a class="sourceLine" id="cb20-2" data-line-number="2"><span class="kw">rbind</span>(x,z)</a></code></pre></div>
 <pre><code>## Warning in rbind(x, z): number of columns of result is not a multiple of vector
 ## length (arg 1)</code></pre>
 <pre><code>##   [,1] [,2] [,3] [,4] [,5]
 ## x    1    2    3    4    1
 ## z    5    8    0    9   10</code></pre>
 <p>You can also apply names using names() for example:</p>
-<div class="sourceCode" id="cb21"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb21-1" data-line-number="1"><span class="kw">names</span>(x)&lt;-<span class="st"> </span><span class="kw">c</span>(<span class="st">&quot;First&quot;</span>, <span class="st">&quot;Second&quot;</span>, <span class="st">&quot;Third&quot;</span>, <span class="st">&quot;Fourth&quot;</span>)</a>
-<a class="sourceLine" id="cb21-2" data-line-number="2">x</a></code></pre></div>
+<div class="sourceCode" id="cb23"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb23-1" data-line-number="1"><span class="kw">names</span>(x)&lt;-<span class="st"> </span><span class="kw">c</span>(<span class="st">&quot;First&quot;</span>, <span class="st">&quot;Second&quot;</span>, <span class="st">&quot;Third&quot;</span>, <span class="st">&quot;Fourth&quot;</span>)</a>
+<a class="sourceLine" id="cb23-2" data-line-number="2">x</a></code></pre></div>
 <pre><code>##  First Second  Third Fourth 
 ##      1      2      3      4</code></pre>
 </div>
@@ -622,7 +623,7 @@ Fred LaPolla
 <h1>Finding out what kind of data structure</h1>
 <p></br> </br> </br></p>
 <p>Just like data type, you can use class on a whole data object to find out what structure it has:</p>
-<div class="sourceCode" id="cb23"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb23-1" data-line-number="1"><span class="kw">class</span>(nyc)</a></code></pre></div>
+<div class="sourceCode" id="cb25"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb25-1" data-line-number="1"><span class="kw">class</span>(nyc)</a></code></pre></div>
 <pre><code>## [1] &quot;data.frame&quot;</code></pre>
 </div>
 <div id="lets-explore-some-data" class="slide section level2">
@@ -632,17 +633,17 @@ Fred LaPolla
 <div id="how-to-tell-what-kind-of-data-you-are-working-with" class="slide section level2">
 <h1>How to tell what kind of data you are working with</h1>
 <p>What kind of data is in your data set?</p>
-<div class="sourceCode" id="cb25"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb25-1" data-line-number="1">nyc &lt;-<span class="st"> </span><span class="kw">read.csv</span>(<span class="st">&quot;/Users/lapolf01/Documents/NYC_HANES_DIAB.csv&quot;</span>)</a>
-<a class="sourceLine" id="cb25-2" data-line-number="2"></a>
-<a class="sourceLine" id="cb25-3" data-line-number="3"><span class="kw">class</span>(nyc)</a></code></pre></div>
+<div class="sourceCode" id="cb27"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb27-1" data-line-number="1">nyc &lt;-<span class="st"> </span><span class="kw">read.csv</span>(<span class="st">&quot;/Users/lapolf01/Documents/NYC_HANES_DIAB.csv&quot;</span>)</a>
+<a class="sourceLine" id="cb27-2" data-line-number="2"></a>
+<a class="sourceLine" id="cb27-3" data-line-number="3"><span class="kw">class</span>(nyc)</a></code></pre></div>
 <pre><code>## [1] &quot;data.frame&quot;</code></pre>
-<div class="sourceCode" id="cb27"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb27-1" data-line-number="1"><span class="kw">class</span>(nyc<span class="op">$</span>LEAD)</a></code></pre></div>
+<div class="sourceCode" id="cb29"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb29-1" data-line-number="1"><span class="kw">class</span>(nyc<span class="op">$</span>LEAD)</a></code></pre></div>
 <pre><code>## [1] &quot;numeric&quot;</code></pre>
-<div class="sourceCode" id="cb29"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb29-1" data-line-number="1"><span class="kw">class</span>(nyc<span class="op">$</span>KEY)</a></code></pre></div>
+<div class="sourceCode" id="cb31"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb31-1" data-line-number="1"><span class="kw">class</span>(nyc<span class="op">$</span>KEY)</a></code></pre></div>
 <pre><code>## [1] &quot;factor&quot;</code></pre>
-<div class="sourceCode" id="cb31"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb31-1" data-line-number="1"><span class="kw">class</span>(nyc<span class="op">$</span>AGEGROUP)</a></code></pre></div>
+<div class="sourceCode" id="cb33"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb33-1" data-line-number="1"><span class="kw">class</span>(nyc<span class="op">$</span>AGEGROUP)</a></code></pre></div>
 <pre><code>## [1] &quot;integer&quot;</code></pre>
-<div class="sourceCode" id="cb33"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb33-1" data-line-number="1"><span class="kw">class</span>(nyc[<span class="dv">4</span>,<span class="dv">5</span>])</a></code></pre></div>
+<div class="sourceCode" id="cb35"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb35-1" data-line-number="1"><span class="kw">class</span>(nyc[<span class="dv">4</span>,<span class="dv">5</span>])</a></code></pre></div>
 <pre><code>## [1] &quot;integer&quot;</code></pre>
 <p>This can be applied to an object like a dataframe or matrix, or to individual pieces of data</p>
 </div>
@@ -653,14 +654,14 @@ Fred LaPolla
 <div id="changing-data-types" class="slide section level2">
 <h1>Changing data types</h1>
 <p>Frequently when we load data into R, R will assume the wrong type of data. For example in our NYC HANES, look at what type of data spage is classified as:</p>
-<div class="sourceCode" id="cb35"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb35-1" data-line-number="1"><span class="kw">class</span>(nyc<span class="op">$</span>AGEGROUP)</a></code></pre></div>
+<div class="sourceCode" id="cb37"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb37-1" data-line-number="1"><span class="kw">class</span>(nyc<span class="op">$</span>AGEGROUP)</a></code></pre></div>
 <pre><code>## [1] &quot;integer&quot;</code></pre>
 <p>Integer feels wrong for a group, so we can reset it using a factor command. Let’s look up what the factor command offers:</p>
-<div class="sourceCode" id="cb37"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb37-1" data-line-number="1">?factor</a></code></pre></div>
+<div class="sourceCode" id="cb39"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb39-1" data-line-number="1">?factor</a></code></pre></div>
 <p>The main things to note are x, the vector we are transforming (e.g. a column in a dataframe), levels (i.e. how many groups are there), labels (i.e. what are the codes for in text)</p>
 <p>In the code below we are going to assign groups, or levels, to this factor and overwrite the existing column with this data. <em>WARNING</em> Only run this command once, as once we overwrite the command, running it again will yield all NAs and we will need to pull in the data to correct it.</p>
-<div class="sourceCode" id="cb38"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb38-1" data-line-number="1">nyc<span class="op">$</span>AGEGROUP &lt;-<span class="st"> </span><span class="kw">factor</span>(nyc<span class="op">$</span>AGEGROUP, <span class="dt">levels =</span> <span class="dv">1</span><span class="op">:</span><span class="dv">3</span>, <span class="dt">labels =</span> <span class="kw">c</span>(<span class="st">&quot;youngest&quot;</span>, <span class="st">&quot;middlest&quot;</span>, <span class="st">&quot;oldest&quot;</span>))</a>
-<a class="sourceLine" id="cb38-2" data-line-number="2"><span class="kw">summary</span>(nyc<span class="op">$</span>AGEGROUP)</a></code></pre></div>
+<div class="sourceCode" id="cb40"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb40-1" data-line-number="1">nyc<span class="op">$</span>AGEGROUP &lt;-<span class="st"> </span><span class="kw">factor</span>(nyc<span class="op">$</span>AGEGROUP, <span class="dt">levels =</span> <span class="dv">1</span><span class="op">:</span><span class="dv">3</span>, <span class="dt">labels =</span> <span class="kw">c</span>(<span class="st">&quot;youngest&quot;</span>, <span class="st">&quot;middlest&quot;</span>, <span class="st">&quot;oldest&quot;</span>))</a>
+<a class="sourceLine" id="cb40-2" data-line-number="2"><span class="kw">summary</span>(nyc<span class="op">$</span>AGEGROUP)</a></code></pre></div>
 <pre><code>## youngest middlest   oldest 
 ##      697      516      314</code></pre>
 </div>
@@ -668,7 +669,7 @@ Fred LaPolla
 <h1>Confusing Note: as.factor() and factor(), as.matrix() vs matrix() etc.</h1>
 <p></br> </br> </br></p>
 <p>You can often coerce data types into another type with as.[data type]. For example:</p>
-<div class="sourceCode" id="cb40"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb40-1" data-line-number="1"><span class="kw">as.integer</span>(<span class="ot">TRUE</span>)</a></code></pre></div>
+<div class="sourceCode" id="cb42"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb42-1" data-line-number="1"><span class="kw">as.integer</span>(<span class="ot">TRUE</span>)</a></code></pre></div>
 <pre><code>## [1] 1</code></pre>
 <p>Normally, the differences between for example as.factor() or factor() or as.matrix() or matrix() are not always super apparent. If your results are not what you expect, you might try as.factor() vs factor() to see if one works how you want.</p>
 </div>
@@ -679,8 +680,8 @@ Fred LaPolla
 <div id="reclassifying-data-structures" class="slide section level2">
 <h1>Reclassifying Data Structures</h1>
 <p>As we have seen, sometimes R reads in data as the wrong type, but it can also read in the wrong data structure. Imagine we had a matrix that when we pulled in R thought it was a dataframe:</p>
-<div class="sourceCode" id="cb42"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb42-1" data-line-number="1">WannaMatrix &lt;-<span class="st"> </span>nyc[<span class="dv">5</span><span class="op">:</span><span class="dv">10</span>, <span class="dv">6</span><span class="op">:</span><span class="dv">9</span>]</a>
-<a class="sourceLine" id="cb42-2" data-line-number="2"><span class="kw">head</span>(WannaMatrix)</a></code></pre></div>
+<div class="sourceCode" id="cb44"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb44-1" data-line-number="1">WannaMatrix &lt;-<span class="st"> </span>nyc[<span class="dv">5</span><span class="op">:</span><span class="dv">10</span>, <span class="dv">6</span><span class="op">:</span><span class="dv">9</span>]</a>
+<a class="sourceLine" id="cb44-2" data-line-number="2"><span class="kw">head</span>(WannaMatrix)</a></code></pre></div>
 <pre><code>##    UCREATININE UALBUMIN       UACR  MERCURYU
 ## 5          105    4.000 4.00000000 2.2051570
 ## 6          163    3.000 2.00000000 0.9791517
@@ -688,16 +689,16 @@ Fred LaPolla
 ## 8           46    2.000 4.00000000 0.1060000
 ## 9           36    0.707 0.01963889 0.2382237
 ## 10         177    4.000 2.00000000 2.2969497</code></pre>
-<div class="sourceCode" id="cb44"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb44-1" data-line-number="1"><span class="kw">class</span>(WannaMatrix)</a></code></pre></div>
+<div class="sourceCode" id="cb46"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb46-1" data-line-number="1"><span class="kw">class</span>(WannaMatrix)</a></code></pre></div>
 <pre><code>## [1] &quot;data.frame&quot;</code></pre>
 </div>
 <div id="reclassifying-data-structures-1" class="slide section level2">
 <h1>Reclassifying Data Structures</h1>
 <p>Here we can reclassify it to be a matrix:</p>
-<div class="sourceCode" id="cb46"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb46-1" data-line-number="1">WannaMatrix &lt;-<span class="st"> </span><span class="kw">as.matrix</span>(WannaMatrix,<span class="dt">nrow =</span> <span class="dv">6</span>, <span class="dt">ncol =</span> <span class="dv">4</span>) </a>
-<a class="sourceLine" id="cb46-2" data-line-number="2"><span class="kw">class</span>(WannaMatrix)</a></code></pre></div>
+<div class="sourceCode" id="cb48"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb48-1" data-line-number="1">WannaMatrix &lt;-<span class="st"> </span><span class="kw">as.matrix</span>(WannaMatrix,<span class="dt">nrow =</span> <span class="dv">6</span>, <span class="dt">ncol =</span> <span class="dv">4</span>) </a>
+<a class="sourceLine" id="cb48-2" data-line-number="2"><span class="kw">class</span>(WannaMatrix)</a></code></pre></div>
 <pre><code>## [1] &quot;matrix&quot;</code></pre>
-<div class="sourceCode" id="cb48"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb48-1" data-line-number="1"><span class="kw">class</span>(WannaMatrix[<span class="dv">4</span>,<span class="dv">1</span>])</a></code></pre></div>
+<div class="sourceCode" id="cb50"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb50-1" data-line-number="1"><span class="kw">class</span>(WannaMatrix[<span class="dv">4</span>,<span class="dv">1</span>])</a></code></pre></div>
 <pre><code>## [1] &quot;numeric&quot;</code></pre>
 <p>This may become important if you read in data in the wrong format, as visualizations like heatmaps will likely be done in matrices rather than dataframes.</p>
 </div>
